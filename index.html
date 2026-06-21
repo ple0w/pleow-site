@@ -1,0 +1,2285 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #0a1628;
+}
+
+/* ── Background ── */
+#bg {
+  position: fixed; inset: 0; z-index: 0;
+  background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.45) saturate(1.1);
+  transition: background-image 0.6s;
+}
+#bg-overlay {
+  position: fixed; inset: 0; z-index: 1;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.35) 100%);
+}
+
+/* ── Atmospheric effects ── */
+/* Corner glows: soft colored auras that breathe slowly */
+.corner-glows { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+.corner-glows::before, .corner-glows::after {
+  content: ''; position: absolute; width: 520px; height: 520px;
+  border-radius: 50%; filter: blur(80px);
+  animation: glow-breathe 8s ease-in-out infinite alternate;
+}
+.corner-glows::before {
+  top: -200px; left: -200px;
+  background: radial-gradient(circle, rgba(120,90,255,0.35), transparent 60%);
+}
+.corner-glows::after {
+  bottom: -200px; right: -200px;
+  background: radial-gradient(circle, rgba(255,80,180,0.28), transparent 60%);
+  animation-delay: -4s;
+}
+@keyframes glow-breathe {
+  from { opacity: 0.55; transform: scale(1); }
+  to   { opacity: 0.95; transform: scale(1.15); }
+}
+.aurora {
+  position: fixed; top: 40%; left: 50%; z-index: 2;
+  width: 700px; height: 240px; transform: translate(-50%, -50%);
+  background: linear-gradient(90deg, transparent, rgba(80,200,255,0.18), rgba(180,120,255,0.14), transparent);
+  filter: blur(60px); pointer-events: none;
+  animation: aurora-drift 14s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift {
+  0%   { transform: translate(-50%, -50%) skewX(-6deg); opacity: 0.6; }
+  100% { transform: translate(-50%, -55%) skewX(6deg);  opacity: 1; }
+}
+
+/* Shooting stars: occasional diagonal streaks */
+.shooting-stars { position: fixed; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
+.shooting-stars::before, .shooting-stars::after {
+  content: ''; position: absolute;
+  width: 140px; height: 1px; background: linear-gradient(90deg, transparent, #fff, transparent);
+  opacity: 0; filter: drop-shadow(0 0 4px #fff);
+}
+.shooting-stars::before {
+  top: 18%; left: -160px;
+  animation: shoot 7s linear infinite;
+}
+.shooting-stars::after {
+  top: 62%; left: -160px;
+  animation: shoot 11s linear infinite;
+  animation-delay: -5s;
+}
+@keyframes shoot {
+  0%   { transform: translateX(0)        translateY(0)    rotate(20deg); opacity: 0; }
+  8%   { opacity: 1; }
+  18%  { transform: translateX(110vw)    translateY(40vh) rotate(20deg); opacity: 0; }
+  100% { transform: translateX(110vw)    translateY(40vh) rotate(20deg); opacity: 0; }
+}
+
+/* Subtle film grain — adds texture, hides banding */
+.grain {
+  position: fixed; inset: 0; z-index: 4; pointer-events: none;
+  opacity: 0.06; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* ── Main ── */
+.wrap {
+  position: relative; z-index: 10;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 14px;
+  padding: 40px 20px;
+  width: 100%; max-width: 480px;
+}
+
+/* ── Avatar ── */
+.avatar-ring {
+  position: relative;
+  width: 96px; height: 96px;
+}
+.avatar-ring::before {
+  content: ''; position: absolute; inset: -10px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(120,90,255,0.5), rgba(255,80,180,0.5), rgba(80,200,255,0.5), rgba(120,90,255,0.5));
+  filter: blur(14px); opacity: 0.7; z-index: -1;
+  animation: avatar-spin 9s linear infinite, avatar-pulse 3.5s ease-in-out infinite alternate;
+}
+@keyframes avatar-spin { to { transform: rotate(360deg); } }
+@keyframes avatar-pulse {
+  from { opacity: 0.45; }
+  to   { opacity: 0.9; }
+}
+.avatar-ring.no-aura::before { display: none; }
+.avatar-ring img {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.15);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  display: block;
+}
+.status-indicator {
+  position: absolute; bottom: 4px; right: 4px;
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 3px solid rgba(10,22,40,0.9);
+  background: #23a55a;
+  box-shadow: 0 0 8px rgba(35,165,90,0.7);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.status-indicator.idle { background: #f0b232; box-shadow: 0 0 8px rgba(240,178,50,0.7); }
+.status-indicator.dnd { background: #ed4245; box-shadow: 0 0 8px rgba(237,66,69,0.7); }
+.status-indicator.offline { background: #80848e; box-shadow: none; }
+
+/* ── Name & bio ── */
+.username {
+  font-size: 1.5rem; font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+}
+.pronouns-badge {
+  margin-top: -4px;
+  display: flex; justify-content: center;
+}
+.pronouns-badge span {
+  font-size: 0.72rem; font-weight: 500;
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px; padding: 2px 10px;
+}
+.bio {
+  font-size: 0.85rem; color: rgba(255,255,255,0.65);
+  text-align: center; line-height: 1.5;
+  max-width: 320px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+}
+
+/* ── Discord Rich Presence Card ── */
+.rpc-card {
+  width: 100%; max-width: 360px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 12px 14px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+.rpc-avatar-wrap { position: relative; flex-shrink: 0; }
+.rpc-avatar {
+  width: 48px; height: 48px; border-radius: 10px;
+  object-fit: cover;
+  background: rgba(255,255,255,0.05);
+}
+.rpc-avatar-user {
+  width: 48px; height: 48px; border-radius: 50%;
+  object-fit: cover;
+  background: rgba(255,255,255,0.05);
+}
+.rpc-small-img {
+  position: absolute; bottom: -4px; right: -4px;
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid rgba(10,22,40,0.8);
+  object-fit: cover;
+  display: none;
+}
+.rpc-info { flex: 1; min-width: 0; }
+.rpc-name {
+  font-weight: 600; font-size: 0.82rem;
+  color: rgba(255,255,255,0.9);
+  display: flex; align-items: center; gap: 6px;
+  flex-wrap: wrap;
+}
+.rpc-badges { display: flex; gap: 4px; }
+.rpc-badge-icon { width: 16px; height: 16px; border-radius: 3px; object-fit: contain; opacity: 0.9; }
+.rpc-detail { font-size: 0.75rem; color: rgba(255,255,255,0.55); margin-top: 2px; line-height: 1.4; }
+.rpc-detail span.highlight { color: rgba(255,255,255,0.8); font-weight: 500; }
+.rpc-album { width: 48px; height: 48px; border-radius: 8px; object-fit: cover; flex-shrink: 0; display: none; }
+.rpc-placeholder {
+  width: 48px; height: 48px; border-radius: 10px;
+  background: rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; flex-shrink: 0;
+}
+
+/* Status text */
+.rpc-status-text {
+  font-size: 0.68rem; letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+/* ── Link Icons Row ── */
+.links-row {
+  display: flex; align-items: center;
+  gap: 6px; flex-wrap: wrap; justify-content: center;
+  position: relative; z-index: 20;
+}
+.link-icon-btn {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  font-size: 1rem;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  position: relative;
+}
+.link-icon-btn:hover {
+  background: rgba(255,255,255,0.16);
+  border-color: rgba(255,255,255,0.25);
+  transform: translateY(-2px);
+  color: #fff;
+  z-index: 40;
+}
+.link-icon-btn svg { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
+.link-icon-btn img { width: 22px; height: 22px; object-fit: contain; border-radius: 5px; }
+
+/* tooltip (shown ABOVE the icon so it never hides behind the player) */
+.link-icon-btn::after {
+  content: attr(data-tip);
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px);
+  font-size: 0.65rem; color: rgba(255,255,255,0.85);
+  background: rgba(10,16,28,0.95); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px; padding: 3px 8px;
+  white-space: nowrap; pointer-events: none; opacity: 0;
+  transition: opacity 0.15s, transform 0.15s; z-index: 60;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+}
+.link-icon-btn:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Views ── */
+.views-row {
+  display: flex; align-items: center; gap: 5px;
+  color: rgba(255,255,255,0.35); font-size: 0.72rem;
+  align-self: flex-start; margin-left: 8px;
+}
+.views-row svg { width: 13px; height: 13px; fill: currentColor; opacity: 0.5; }
+
+/* ── Music Player ── */
+.music-player {
+  width: 100%; max-width: 360px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px; padding: 12px 16px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+.player-top { display: flex; align-items: center; gap: 10px; }
+.player-art {
+  width: 42px; height: 42px; border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0; overflow: hidden;
+}
+.player-art img { width: 100%; height: 100%; object-fit: cover; }
+.player-info { flex: 1; min-width: 0; }
+.player-title { font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.9); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-artist { font-size: 0.72rem; color: rgba(255,255,255,0.45); margin-top: 1px; }
+.player-controls { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.player-btn { background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; display: flex; align-items: center; padding: 0; transition: color 0.15s; }
+.player-btn:hover { color: #fff; }
+.player-btn svg { width: 15px; height: 15px; fill: currentColor; }
+.play-btn svg { width: 20px; height: 20px; }
+.player-progress { margin-top: 10px; display: flex; align-items: center; gap: 8px; }
+.player-time { font-size: 0.65rem; color: rgba(255,255,255,0.35); font-variant-numeric: tabular-nums; min-width: 28px; }
+.player-time.right { text-align: right; }
+.progress-track { flex: 1; height: 3px; background: rgba(255,255,255,0.1); border-radius: 99px; cursor: pointer; }
+.progress-fill { height: 100%; border-radius: 99px; background: rgba(255,255,255,0.55); width: 0%; transition: width 0.5s linear; }
+
+/* ── Settings Panel (hidden, password protected) ── */
+.settings-trigger {
+  position: fixed; bottom: 16px; right: 16px; z-index: 100;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(255,255,255,0.1); border: none; cursor: pointer;
+  transition: all 0.3s;
+}
+.settings-trigger:hover { background: rgba(255,255,255,0.35); width: 10px; height: 10px; }
+
+.modal-bg {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+}
+.modal-bg.open { display: flex; }
+
+.modal {
+  background: #0f1623;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 18px; padding: 28px;
+  width: 340px; max-width: 95vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+}
+.modal-title {
+  font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.85);
+  margin-bottom: 20px; letter-spacing: 0.02em;
+}
+.modal-section { margin-bottom: 18px; }
+.modal-label { font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 6px; letter-spacing: 0.06em; text-transform: uppercase; }
+.modal-input {
+  width: 100%; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 9px;
+  padding: 9px 12px; color: #fff;
+  font-family: 'Inter', sans-serif; font-size: 0.82rem;
+  outline: none; transition: border-color 0.2s;
+}
+.modal-input:focus { border-color: rgba(255,255,255,0.3); }
+.modal-input::placeholder { color: rgba(255,255,255,0.2); }
+.modal-btn {
+  width: 100%; padding: 10px; border-radius: 9px; border: none;
+  background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85);
+  font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; margin-top: 6px;
+}
+.modal-btn:hover { background: rgba(255,255,255,0.18); }
+.modal-btn.primary { background: rgba(88,101,242,0.7); color: #fff; }
+.modal-btn.primary:hover { background: rgba(88,101,242,0.9); }
+.modal-close {
+  float: right; background: none; border: none; color: rgba(255,255,255,0.3);
+  font-size: 1.1rem; cursor: pointer; line-height: 1; margin-top: -4px;
+}
+.modal-close:hover { color: rgba(255,255,255,0.7); }
+
+.pw-screen { }
+.settings-screen { display: none; }
+.settings-screen.visible { display: block; }
+.pw-screen.hidden { display: none; }
+
+.divider { height: 1px; background: rgba(255,255,255,0.07); margin: 14px 0; }
+
+.modal-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+.tab-btn {
+  flex: 1 1 28%; min-width: 0; padding: 7px 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);
+  background: transparent; color: rgba(255,255,255,0.4); font-size: 0.7rem; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif;
+}
+.tab-btn.active { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.15); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* link editor rows */
+.link-editor-row { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; }
+.link-editor-row .modal-input { flex: 1; }
+.link-editor-label { font-size: 0.7rem; color: rgba(255,255,255,0.35); min-width: 60px; }
+
+/* color accent */
+.accent-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.chip {
+  width: 24px; height: 24px; border-radius: 6px; cursor: pointer;
+  border: 2px solid transparent; transition: transform 0.15s;
+}
+.chip:hover { transform: scale(1.15); }
+.chip.active { border-color: rgba(255,255,255,0.7); }
+
+/* save toast */
+.toast {
+  position: fixed; bottom: 48px; left: 50%; transform: translateX(-50%) translateY(10px);
+  background: rgba(35,165,90,0.9); color: #fff;
+  font-size: 0.78rem; font-weight: 600; border-radius: 99px;
+  padding: 8px 18px; z-index: 300; opacity: 0;
+  transition: all 0.3s; pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Interactive Particle Canvas ── */
+#particles {
+  position: fixed; inset: 0; z-index: 2;
+  pointer-events: none;
+}
+
+/* ── 3D Tilt wrapper ── */
+.tilt {
+  position: relative;
+  transition: transform 0.15s ease-out;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.tilt > * { transform: translateZ(0); }
+.tilt-glare {
+  position: absolute; inset: 0; border-radius: inherit;
+  background: radial-gradient(circle at var(--gx,50%) var(--gy,50%), rgba(255,255,255,0.18), transparent 45%);
+  opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 5;
+}
+
+/* ── Local Time widget ── */
+.localtime {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 0.72rem; font-weight: 500;
+  color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px; padding: 4px 12px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+}
+.localtime svg { width: 12px; height: 12px; fill: currentColor; opacity: 0.7; }
+.localtime .lt-clock { font-variant-numeric: tabular-nums; color: rgba(255,255,255,0.85); letter-spacing: 0.02em; }
+
+/* ── Typing effect cursor ── */
+.type-cursor {
+  display: inline-block; width: 2px; height: 0.95em;
+  background: rgba(255,255,255,0.6);
+  margin-left: 2px; vertical-align: text-bottom;
+  animation: caret-blink 1s steps(1) infinite;
+}
+@keyframes caret-blink { 0%,50%{opacity:1;} 50.01%,100%{opacity:0;} }
+
+/* ── Glitch effect (username) ── */
+.glitch { position: relative; }
+.glitch.glitching::before,
+.glitch.glitching::after {
+  content: attr(data-text);
+  position: absolute; left: 0; top: 0; width: 100%;
+  overflow: hidden;
+}
+.glitch.glitching::before {
+  color: #5865f2; left: 2px;
+  clip-path: inset(0 0 55% 0);
+  animation: glitch-x 0.4s steps(2) infinite;
+}
+.glitch.glitching::after {
+  color: #23a5d5; left: -2px;
+  clip-path: inset(55% 0 0 0);
+  animation: glitch-x 0.4s steps(2) infinite reverse;
+}
+@keyframes glitch-x {
+  0%{transform:translateX(0);} 25%{transform:translateX(-2px);}
+  50%{transform:translateX(2px);} 75%{transform:translateX(-1px);} 100%{transform:translateX(0);}
+}
+
+/* ── Music Visualizer ── */
+.visualizer {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 3px; height: 22px; margin-top: 10px;
+  opacity: 0.5; transition: opacity 0.3s;
+}
+.visualizer.active { opacity: 1; }
+.viz-bar {
+  width: 3px; border-radius: 99px;
+  background: rgba(255,255,255,0.55);
+  height: 20%;
+  transition: height 0.1s ease;
+}
+.visualizer.playing .viz-bar { animation: viz-bounce 0.9s ease-in-out infinite; }
+@keyframes viz-bounce {
+  0%,100% { height: 18%; } 50% { height: 90%; }
+}
+
+/* ── Copy notification toast (top center) ── */
+.copy-toast {
+  position: fixed; top: 24px; left: 50%;
+  transform: translateX(-50%) translateY(-16px);
+  background: rgba(15,22,35,0.92);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff; font-size: 0.78rem; font-weight: 500;
+  border-radius: 10px; padding: 9px 16px; z-index: 320;
+  opacity: 0; pointer-events: none;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  transition: all 0.25s cubic-bezier(0.2,0.8,0.3,1);
+}
+.copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.copy-toast svg { width: 15px; height: 15px; fill: #23a55a; }
+
+/* ── Steam RPC Card ── */
+.steam-card {
+  width: 100%; max-width: 360px;
+  background: rgba(27,40,56,0.45);
+  border: 1px solid rgba(102,192,244,0.18);
+  border-radius: 14px;
+  padding: 12px 14px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+.steam-avatar-wrap { position: relative; flex-shrink: 0; }
+.steam-avatar {
+  width: 48px; height: 48px; border-radius: 10px;
+  object-fit: cover; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(102,192,244,0.25);
+}
+.steam-state-dot {
+  position: absolute; bottom: -3px; right: -3px;
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid rgba(10,22,40,0.9);
+  background: #80848e;
+}
+.steam-state-dot.online { background: #57cbde; box-shadow: 0 0 8px rgba(87,203,222,0.6); }
+.steam-state-dot.ingame { background: #90ba3c; box-shadow: 0 0 8px rgba(144,186,60,0.7); }
+.steam-info { flex: 1; min-width: 0; }
+.steam-name {
+  font-weight: 600; font-size: 0.82rem; color: rgba(255,255,255,0.92);
+  display: flex; align-items: center; gap: 6px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.steam-logo { width: 14px; height: 14px; opacity: 0.7; flex-shrink: 0; }
+.steam-detail { font-size: 0.75rem; color: rgba(255,255,255,0.55); margin-top: 2px; line-height: 1.4; }
+.steam-detail .ingame-txt { color: #90ba3c; font-weight: 500; }
+.steam-meta { font-size: 0.66rem; color: rgba(255,255,255,0.38); margin-top: 3px; letter-spacing: 0.03em; }
+.steam-game-art {
+  width: 48px; height: 48px; border-radius: 8px; object-fit: cover;
+  flex-shrink: 0; display: none; border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Spotify live progress (inside Discord card) */
+.spotify-progress {
+  margin-top: 6px; height: 3px; width: 100%;
+  background: rgba(255,255,255,0.12); border-radius: 99px; overflow: hidden; display: none;
+}
+.spotify-progress-fill {
+  height: 100%; width: 0%; border-radius: 99px;
+  background: #1db954; transition: width 1s linear;
+}
+
+/* Mute button active state */
+.player-btn.muted { color: rgba(237,66,69,0.85); }
+
+/* Volume slider — slides out from the mute button on hover */
+.volume-wrap { position: relative; }
+.volume-popup {
+  position: absolute; bottom: calc(100% + 8px); right: -6px;
+  background: rgba(15,22,35,0.95);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px; padding: 10px 12px;
+  opacity: 0; pointer-events: none; transform: translateY(6px);
+  transition: all 0.18s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  z-index: 50;
+}
+.volume-wrap:hover .volume-popup,
+.volume-popup:hover { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.volume-slider {
+  -webkit-appearance: none; appearance: none;
+  width: 90px; height: 4px; border-radius: 99px;
+  background: rgba(255,255,255,0.15); outline: none; cursor: pointer;
+}
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #fff; border: none; cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+.volume-slider::-moz-range-thumb {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #fff; border: none; cursor: pointer;
+}
+
+/* File-input controls in settings */
+.file-input-row { display: flex; gap: 6px; align-items: center; margin-top: 6px; }
+.file-btn {
+  flex-shrink: 0; font-size: 0.72rem; font-weight: 500;
+  color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+  padding: 7px 11px; cursor: pointer; transition: all 0.2s;
+  font-family: 'Inter', sans-serif; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.file-btn:hover { background: rgba(255,255,255,0.16); }
+.file-btn svg { width: 13px; height: 13px; fill: currentColor; }
+.file-name {
+  font-size: 0.68rem; color: rgba(255,255,255,0.4);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.file-clear {
+  background: none; border: none; color: rgba(237,66,69,0.7);
+  cursor: pointer; font-size: 0.9rem; padding: 0 4px; line-height: 1;
+}
+.file-clear:hover { color: rgba(237,66,69,1); }
+.field-or { font-size: 0.6rem; color: rgba(255,255,255,0.25); text-align: center; margin: 4px 0; letter-spacing: 0.1em; }
+
+/* link editor icon upload */
+.link-icon-upload {
+  flex-shrink: 0; width: 30px; height: 30px; border-radius: 7px;
+  border: 1px dashed rgba(255,255,255,0.18); background: rgba(255,255,255,0.04);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  overflow: hidden; padding: 0;
+}
+.link-icon-upload img { width: 100%; height: 100%; object-fit: contain; }
+.link-icon-upload svg { width: 14px; height: 14px; fill: rgba(255,255,255,0.4); }
+
+/* ── Responsive ── */
+@media (max-width: 420px) {
+  .username { font-size: 1.25rem; }
+  .rpc-card, .music-player, .steam-card { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div id="bg"></div>
+<div id="bg-overlay"></div>
+<div class="corner-glows"></div>
+<div class="aurora"></div>
+<div class="shooting-stars"></div>
+<div class="grain"></div>
+<canvas id="particles"></canvas>
+
+<!-- MAIN WRAP -->
+<div class="wrap" id="mainWrap">
+
+  <!-- Views (top-left feel, actually above links) -->
+  <div class="views-row" id="viewsRow" style="width:100%;max-width:360px;">
+    <svg viewBox="0 0 20 20"><path d="M10 4C5 4 1.3 8.4 1.1 10c.2 1.6 3.9 6 8.9 6s8.7-4.4 8.9-6C18.7 8.4 15 4 10 4zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
+    <span id="viewNum">0</span>
+  </div>
+
+  <!-- Avatar -->
+  <div class="avatar-ring">
+    <img id="avatarImg" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="avatar">
+    <div class="status-indicator" id="statusDot"></div>
+  </div>
+
+  <!-- Name -->
+  <div class="username" id="usernameEl">username</div>
+
+  <!-- Pronouns -->
+  <div class="pronouns-badge" id="pronounsBadge" style="display:none;">
+    <span id="pronounsEl"></span>
+  </div>
+
+  <!-- Bio -->
+  <div class="bio" id="bioEl">bio goes here</div>
+
+  <!-- Local Time -->
+  <div class="localtime" id="localTime" style="display:none;">
+    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+    <span>my time</span>
+    <span class="lt-clock" id="ltClock">--:--</span>
+  </div>
+
+  <!-- Discord Rich Presence Card -->
+  <div class="rpc-card tilt" id="rpcCard">
+    <div class="tilt-glare"></div>
+    <div class="rpc-avatar-wrap">
+      <img id="rpcUserAvatar" class="rpc-avatar-user" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="">
+      <img id="rpcActivityImg" class="rpc-small-img" src="" alt="">
+    </div>
+    <div class="rpc-info">
+      <div class="rpc-name" id="rpcName">
+        <span id="rpcDisplayName">Loading...</span>
+        <div class="rpc-badges" id="rpcBadges"></div>
+      </div>
+      <div class="rpc-detail" id="rpcDetail">Connecting to Discord...</div>
+      <div class="rpc-status-text" id="rpcStatusText"></div>
+      <div class="spotify-progress" id="spotifyProgress"><div class="spotify-progress-fill" id="spotifyProgressFill"></div></div>
+    </div>
+    <img id="rpcAlbumArt" class="rpc-album" src="" alt="">
+    <div class="rpc-placeholder" id="rpcPlaceholder" style="display:none;">🎮</div>
+  </div>
+
+  <!-- Steam Card -->
+  <div class="steam-card tilt" id="steamCard" style="display:none;">
+    <div class="tilt-glare"></div>
+    <div class="steam-avatar-wrap">
+      <img id="steamAvatar" class="steam-avatar" src="" alt="">
+      <div class="steam-state-dot" id="steamStateDot"></div>
+    </div>
+    <div class="steam-info">
+      <div class="steam-name">
+        <svg class="steam-logo" viewBox="0 0 24 24" fill="#fff"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.607 0 11.979 0z"/></svg>
+        <span id="steamName">Steam</span>
+      </div>
+      <div class="steam-detail" id="steamDetail">Loading Steam…</div>
+      <div class="steam-meta" id="steamMeta"></div>
+    </div>
+    <img id="steamGameArt" class="steam-game-art" src="" alt="">
+  </div>
+
+  <!-- Link Icons -->
+  <div class="links-row" id="linksRow">
+    <!-- populated by JS -->
+  </div>
+
+  <!-- Music Player -->
+  <div class="music-player tilt" id="musicPlayer" style="display:none;">
+    <div class="tilt-glare"></div>
+    <div class="player-top">
+      <div class="player-art" id="playerArt">🎵</div>
+      <div class="player-info">
+        <div class="player-title" id="playerTitle">Song Title</div>
+        <div class="player-artist" id="playerArtist">Artist</div>
+      </div>
+      <div class="player-controls">
+        <button class="player-btn" onclick="playerPrev()">
+          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+        </button>
+        <button class="player-btn play-btn" id="playBtn" onclick="playerToggle()">
+          <svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button class="player-btn" onclick="playerNext()">
+          <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zm2.5-6 5.5 3.9V8.1L8.5 12zM16 6h2v12h-2z"/></svg>
+        </button>
+        <div class="volume-wrap">
+          <button class="player-btn" id="muteBtn" onclick="playerMute()" title="Mute">
+            <svg viewBox="0 0 24 24" id="muteIcon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12z"/></svg>
+          </button>
+          <div class="volume-popup">
+            <input type="range" min="0" max="100" value="25" class="volume-slider" id="volumeSlider" oninput="setVolume(this.value)">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="player-progress">
+      <span class="player-time" id="playerCurrentTime">0:00</span>
+      <div class="progress-track" id="progressTrack" onclick="seekPlayer(event)">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="player-time right" id="playerDuration">0:00</span>
+    </div>
+    <div class="visualizer" id="visualizer"></div>
+  </div>
+
+</div>
+
+<!-- Hidden Settings Trigger (small dot bottom-right) -->
+<button class="settings-trigger" id="settingsTrigger" onclick="openSettings()"></button>
+
+<!-- Settings Modal -->
+<div class="modal-bg" id="modalBg" onclick="outsideClick(event)">
+  <div class="modal">
+
+    <!-- Password Screen -->
+    <div class="pw-screen" id="pwScreen">
+      <div class="modal-title">
+        Enter password
+        <button class="modal-close" onclick="closeSettings()">✕</button>
+      </div>
+      <input class="modal-input" type="password" id="pwInput" placeholder="password" onkeydown="if(event.key==='Enter')checkPw()">
+      <button class="modal-btn primary" style="margin-top:10px;" onclick="checkPw()">Unlock</button>
+      <div style="font-size:0.68rem;color:rgba(255,255,255,0.2);margin-top:10px;text-align:center;">default: 1234</div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div class="settings-screen" id="settingsScreen">
+      <div class="modal-title">
+        Settings
+        <button class="modal-close" onclick="closeSettings()">✕</button>
+      </div>
+
+      <div class="modal-tabs">
+        <button class="tab-btn active" onclick="switchTab('profile')">Profile</button>
+        <button class="tab-btn" onclick="switchTab('links')">Links</button>
+        <button class="tab-btn" onclick="switchTab('media')">Media</button>
+        <button class="tab-btn" onclick="switchTab('discord')">Discord</button>
+        <button class="tab-btn" onclick="switchTab('steam')">Steam</button>
+        <button class="tab-btn" onclick="switchTab('extras')">Extras</button>
+      </div>
+
+      <!-- TAB: Profile -->
+      <div class="tab-content active" id="tab-profile">
+        <div class="modal-section">
+          <div class="modal-label">Username</div>
+          <input class="modal-input" id="s-username" placeholder="yourname">
+        </div>
+        <div class="modal-section">
+          <div class="modal-label">Pronouns (leave blank to hide)</div>
+          <input class="modal-input" id="s-pronouns" placeholder="she/her">
+        </div>
+        <div class="modal-section">
+          <div class="modal-label">Bio</div>
+          <input class="modal-input" id="s-bio" placeholder="say something...">
+        </div>
+        <div class="modal-section">
+          <div class="modal-label">Avatar (image / gif)</div>
+          <div class="file-input-row">
+            <button type="button" class="file-btn" onclick="document.getElementById('f-avatar').click()">
+              <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>Choose file
+            </button>
+            <input type="file" id="f-avatar" accept="image/*,image/gif" style="display:none" onchange="onAssetFile('avatar', this)">
+            <span class="file-name" id="fn-avatar"></span>
+            <button type="button" class="file-clear" id="fc-avatar" style="display:none" onclick="clearAsset('avatar')" title="Remove">✕</button>
+          </div>
+          <div class="field-or">— OR PASTE URL —</div>
+          <input class="modal-input" id="s-avatar" placeholder="https://...">
+        </div>
+        <div class="modal-section">
+          <div class="modal-label">Background (image / gif)</div>
+          <div class="file-input-row">
+            <button type="button" class="file-btn" onclick="document.getElementById('f-bg').click()">
+              <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>Choose file
+            </button>
+            <input type="file" id="f-bg" accept="image/*,image/gif" style="display:none" onchange="onAssetFile('bg', this)">
+            <span class="file-name" id="fn-bg"></span>
+            <button type="button" class="file-clear" id="fc-bg" style="display:none" onclick="clearAsset('bg')" title="Remove">✕</button>
+          </div>
+          <div class="field-or">— OR PASTE URL —</div>
+          <input class="modal-input" id="s-bg" placeholder="https://...">
+        </div>
+        <div class="modal-section">
+          <div class="modal-label">Password</div>
+          <input class="modal-input" type="password" id="s-pw" placeholder="new password">
+        </div>
+      </div>
+
+      <!-- TAB: Links -->
+      <div class="tab-content" id="tab-links">
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.3);margin-bottom:14px;">Leave URL blank to hide that icon.</div>
+        <div id="linksEditor"></div>
+      </div>
+
+      <!-- TAB: Media -->
+      <div class="tab-content" id="tab-media">
+        <div class="modal-section">
+          <div class="modal-label">Show Music Player</div>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="s-showPlayer" style="accent-color:#5865f2;">
+            <span style="font-size:0.78rem;color:rgba(255,255,255,0.6);">Enable player</span>
+          </label>
+        </div>
+        <div class="modal-section">
+          <div class="modal-label">Song Title</div>
+          <input class="modal-input" id="s-songTitle" placeholder="Song name">
+        </div>
+        <div class="modal-section">
+          <div class="modal-label">Artist</div>
+          <input class="modal-input" id="s-songArtist" placeholder="Artist name">
+        </div>
+        <div class="modal-section">
+          <div class="modal-label">Album Art (image)</div>
+          <div class="file-input-row">
+            <button type="button" class="file-btn" onclick="document.getElementById('f-albumArt').click()">
+              <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>Choose file
+            </button>
+            <input type="file" id="f-albumArt" accept="image/*" style="display:none" onchange="onAssetFile('albumArt', this)">
+            <span class="file-name" id="fn-albumArt"></span>
+            <button type="button" class="file-clear" id="fc-albumArt" style="display:none" onclick="clearAsset('albumArt')" title="Remove">✕</button>
+          </div>
+          <div class="field-or">— OR PASTE URL —</div>
+          <input class="modal-input" id="s-albumArt" placeholder="https://...">
+        </div>
+        <div class="modal-section">
+          <div class="modal-label">Audio File (mp3 / ogg / wav)</div>
+          <div class="file-input-row">
+            <button type="button" class="file-btn" onclick="document.getElementById('f-audio').click()">
+              <svg viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>Choose mp3
+            </button>
+            <input type="file" id="f-audio" accept="audio/*" style="display:none" onchange="onAssetFile('audio', this)">
+            <span class="file-name" id="fn-audio"></span>
+            <button type="button" class="file-clear" id="fc-audio" style="display:none" onclick="clearAsset('audio')" title="Remove">✕</button>
+          </div>
+          <div class="field-or">— OR PASTE URL —</div>
+          <input class="modal-input" id="s-audioUrl" placeholder="https://.../song.mp3">
+        </div>
+        <div class="modal-section">
+          <div class="modal-label">Song Duration (auto-detected from file)</div>
+          <input class="modal-input" type="number" id="s-songDuration" placeholder="auto" readonly style="opacity:0.6;cursor:not-allowed;">
+          <div style="font-size:0.66rem;color:rgba(255,255,255,0.25);margin-top:5px;">Duration is read automatically from your audio file.</div>
+        </div>
+      </div>
+
+      <!-- TAB: Discord -->
+      <div class="tab-content" id="tab-discord">
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:14px;">
+          Discord ID'ni gir. <b style="color:rgba(255,255,255,0.75);">Lanyard</b> bot'unu sunucuna eklemen gerekiyor.<br>
+          <a href="https://discord.gg/lanyard" target="_blank" style="color:#5865f2;font-size:0.7rem;">discord.gg/lanyard</a>
+          → sunucuya gir = otomatik izleme başlar.
+        </div>
+        <div class="modal-section">
+          <div class="modal-label">Discord User ID</div>
+          <input class="modal-input" id="s-discordId" placeholder="123456789012345678">
+        </div>
+        <div class="modal-section">
+          <div class="modal-label">Discord Username (click-to-copy)</div>
+          <input class="modal-input" id="s-discordUsername" placeholder="pleow">
+          <div style="font-size:0.66rem;color:rgba(255,255,255,0.25);margin-top:5px;">Set this to make the Discord icon copy your username instead of opening a link.</div>
+        </div>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:8px;">
+          ID almak için: Discord'da Geliştirici Modu aç → profline sağ tık → ID'yi Kopyala
+        </div>
+      </div>
+
+      <!-- TAB: Steam -->
+      <div class="tab-content" id="tab-steam">
+        <div class="modal-section">
+          <div class="modal-label">Show Steam Card</div>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="s-showSteam" style="accent-color:#66c0f4;">
+            <span style="font-size:0.78rem;color:rgba(255,255,255,0.6);">Enable Steam card</span>
+          </label>
+        </div>
+        <div class="modal-section">
+          <div class="modal-label">Worker URL</div>
+          <input class="modal-input" id="s-workerUrl" placeholder="https://your-worker.workers.dev">
+          <div style="font-size:0.66rem;color:rgba(255,255,255,0.3);margin-top:6px;line-height:1.5;">
+            Your Cloudflare Worker address. The Worker holds your Steam API key & this settings
+            password as <b style="color:rgba(255,255,255,0.7);">secrets</b> — they never appear in this page.
+            Setup steps are in the <b style="color:rgba(255,255,255,0.7);">worker.js</b> file's comments.
+          </div>
+        </div>
+        <div style="font-size:0.66rem;color:rgba(255,255,255,0.28);margin-top:4px;line-height:1.5;">
+          Note: this same Worker URL also verifies your settings password. Until you set it,
+          the panel uses the temporary local password.
+        </div>
+      </div>
+
+      <!-- TAB: Extras -->
+      <div class="tab-content" id="tab-extras">
+        <div class="modal-section">
+          <div class="modal-label">Effects</div>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:9px;">
+            <input type="checkbox" id="s-fxParticles" style="accent-color:#5865f2;">
+            <span style="font-size:0.78rem;color:rgba(255,255,255,0.6);">Interactive particle background</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:9px;">
+            <input type="checkbox" id="s-fxTilt" style="accent-color:#5865f2;">
+            <span style="font-size:0.78rem;color:rgba(255,255,255,0.6);">3D tilt on cards</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:9px;">
+            <input type="checkbox" id="s-fxTyping" style="accent-color:#5865f2;">
+            <span style="font-size:0.78rem;color:rgba(255,255,255,0.6);">Typing effect on bio</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:9px;">
+            <input type="checkbox" id="s-fxGlitch" style="accent-color:#5865f2;">
+            <span style="font-size:0.78rem;color:rgba(255,255,255,0.6);">Glitch flash on username</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:9px;">
+            <input type="checkbox" id="s-fxAmbient" style="accent-color:#5865f2;">
+            <span style="font-size:0.78rem;color:rgba(255,255,255,0.6);">Ambient glow &amp; shooting stars</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="s-fxSounds" style="accent-color:#5865f2;">
+            <span style="font-size:0.78rem;color:rgba(255,255,255,0.6);">UI hover / click sounds</span>
+          </label>
+        </div>
+        <div class="divider"></div>
+        <div class="modal-section">
+          <div class="modal-label">Local Time Widget</div>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:9px;">
+            <input type="checkbox" id="s-showTime" style="accent-color:#5865f2;">
+            <span style="font-size:0.78rem;color:rgba(255,255,255,0.6);">Show "my time"</span>
+          </label>
+          <input class="modal-input" id="s-timezone" placeholder="Europe/Istanbul">
+          <div style="font-size:0.66rem;color:rgba(255,255,255,0.25);margin-top:5px;">IANA timezone. Leave blank to use this device's timezone.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="modal-section">
+          <div class="modal-label">Global View Counter</div>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:9px;">
+            <input type="checkbox" id="s-globalCounter" style="accent-color:#5865f2;">
+            <span style="font-size:0.78rem;color:rgba(255,255,255,0.6);">Count all visitors (not just yours)</span>
+          </label>
+          <input class="modal-input" id="s-counterKey" placeholder="pleow-profile">
+          <div style="font-size:0.66rem;color:rgba(255,255,255,0.25);margin-top:5px;">A unique name for your page. Uses the free counterapi.dev service; falls back to local count if offline.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="modal-btn primary" onclick="saveSettings()" style="flex:1;">Save Changes</button>
+        <button class="modal-btn" onclick="downloadPublishReady()" style="flex:1;" title="Save your settings into a fresh index.html with all your config baked in. Drag this file to Netlify/GitHub to publish.">📥 Download index.html</button>
+      </div>
+      <div style="font-size:0.66rem;color:rgba(255,255,255,0.3);margin-top:8px;line-height:1.5;text-align:center;">
+        <b style="color:rgba(255,255,255,0.5);">Download</b> = a ready-to-publish copy of this page with your settings baked in.
+        Drag it to Netlify / GitHub and visitors see <i>your</i> profile.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">Saved!</div>
+
+<!-- Copy notification -->
+<div class="copy-toast" id="copyToast">
+  <svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+  <span id="copyToastText">Copied!</span>
+</div>
+
+<audio id="audioEl" preload="metadata"></audio>
+
+<script>
+// ─── CONFIG (edit defaults here or via settings panel) ───
+const DEFAULT_CONFIG = {
+  "username": "pleow",
+  "pronouns": "",
+  "bio": "olması gerek",
+  "avatar": "",
+  "bg": "",
+  "password": "",
+  "discordId": "748994546146345111",
+  "discordUsername": "",
+  "showPlayer": true,
+  "songTitle": "I Love",
+  "songArtist": "Lucky Star",
+  "albumArt": "https://yt3.googleusercontent.com/5G1HCBum-Jw3mnzZOkwcnm96vUF3Hpq6i_FRptGnuMp9KJFObYqO2QwrlBMeorFYBEhRGUPRkAktu5o=w544-h544-l90-rj",
+  "audioUrl": "",
+  "songDuration": 99,
+  "fxParticles": true,
+  "fxTilt": true,
+  "fxTyping": true,
+  "fxGlitch": true,
+  "fxAmbient": true,
+  "fxSounds": true,
+  "showTime": false,
+  "timezone": "",
+  "globalCounter": true,
+  "counterKey": "pleow",
+  "showSteam": true,
+  "workerUrl": "https://pleow-site.pqkalem.workers.dev",
+  "links": [
+    {
+      "id": "discord",
+      "label": "Discord",
+      "url": "discord.com/users/748994546146345111",
+      "icon": "discord"
+    },
+    {
+      "id": "roblox",
+      "label": "Roblox",
+      "url": "https://www.roblox.com/users/1222447941/profile",
+      "icon": "roblox"
+    },
+    {
+      "id": "steam",
+      "label": "Steam",
+      "url": "https://steamcommunity.com/id/pleow_/",
+      "icon": "steam"
+    },
+    {
+      "id": "spotify",
+      "label": "Spotify",
+      "url": "https://open.spotify.com/user/drvzl7m4xl8oa9y69t8vu7nea?si=cbccfb7833e94926",
+      "icon": "spotify"
+    },
+    {
+      "id": "statsfm",
+      "label": "stats.fm",
+      "url": "https://stats.fm/pleow",
+      "icon": "statsfm"
+    },
+    {
+      "id": "letterboxd",
+      "label": "Letterboxd",
+      "url": "https://boxd.it/kU5zD",
+      "icon": "letterboxd"
+    },
+    {
+      "id": "twitter",
+      "label": "Twitter",
+      "url": "",
+      "icon": "twitter"
+    },
+    {
+      "id": "osu",
+      "label": "osu!",
+      "url": "https://osu.ppy.sh/users/20213041/mania",
+      "icon": "osu"
+    },
+    {
+      "id": "youtube",
+      "label": "YouTube",
+      "url": "",
+      "icon": "youtube"
+    },
+    {
+      "id": "twitch",
+      "label": "Twitch",
+      "url": "",
+      "icon": "twitch"
+    },
+    {
+      "id": "github",
+      "label": "GitHub",
+      "url": "",
+      "icon": "github"
+    },
+    {
+      "id": "instagram",
+      "label": "Instagram",
+      "url": "",
+      "icon": "instagram"
+    },
+    {
+      "id": "custom1",
+      "label": "Custom",
+      "url": "",
+      "icon": "link"
+    }
+  ],
+  "steamId": "",
+  "steamKey": "",
+  "steamProxy": "https://corsproxy.io/?url="
+};
+
+// SVG icons map
+const ICONS = {
+  discord: `<svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>`,
+  roblox: `<svg viewBox="0 0 24 24"><path d="M4.686 0 0 19.314 19.314 24 24 4.686zm9.468 14.355-4.823-1.29 1.29-4.823 4.823 1.29z"/></svg>`,
+  steam: `<svg viewBox="0 0 24 24"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.607 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/></svg>`,
+  spotify: `<svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>`,
+  statsfm: `<svg viewBox="0 0 24 24"><path d="M3 3v18h18v-2H5V3H3zm14 14h2V9h-2v8zm-4 0h2V7h-2v10zm-4 0h2v-6H9v6zm-4 0h2v-4H5v4z"/></svg>`,
+  letterboxd: `<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="3"/><circle cx="12" cy="12" r="3"/><circle cx="19" cy="12" r="3"/></svg>`,
+  twitter: `<svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.257 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+  osu: `<svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 4a8 8 0 1 1 0 16A8 8 0 0 1 12 4zm0 3a5 5 0 1 0 0 10A5 5 0 0 0 12 7zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>`,
+  youtube: `<svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
+  twitch: `<svg viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>`,
+  github: `<svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>`,
+  instagram: `<svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`,
+  link: `<svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>`,
+};
+
+// ─── State ───
+let config = {};
+let lanyardInterval = null;
+let playerInterval = null;
+let playerPlaying = false;
+let playerCurrentSec = 0;
+let playerTotalSec = 0;
+let audio = document.getElementById('audioEl');
+audio.volume = 0.25; // gentle default — won't blast eardrums
+
+// ─── Asset store (IndexedDB for files: images, gifs, mp3, icons) ───
+// Config holds either a normal URL, or an "asset://<key>" marker pointing to a Blob in IndexedDB.
+let assetURLs = {}; // key -> object URL (recreated each load)
+const ASSETS = [
+  { id: 'avatar',   field: 'avatar',   input: 's-avatar'   },
+  { id: 'bg',       field: 'bg',       input: 's-bg'       },
+  { id: 'albumArt', field: 'albumArt', input: 's-albumArt' },
+  { id: 'audio',    field: 'audioUrl', input: 's-audioUrl' },
+];
+
+function idbOpen() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open('profileAssets', 1);
+    r.onupgradeneeded = () => { if (!r.result.objectStoreNames.contains('assets')) r.result.createObjectStore('assets'); };
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+async function idbPut(key, blob) {
+  const db = await idbOpen();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('assets', 'readwrite');
+    tx.objectStore('assets').put(blob, key);
+    tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error);
+  });
+}
+async function idbGet(key) {
+  const db = await idbOpen();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('assets', 'readonly');
+    const rq = tx.objectStore('assets').get(key);
+    rq.onsuccess = () => res(rq.result || null); rq.onerror = () => rej(rq.error);
+  });
+}
+async function idbDel(key) {
+  const db = await idbOpen();
+  return new Promise((res) => {
+    const tx = db.transaction('assets', 'readwrite');
+    tx.objectStore('assets').delete(key);
+    tx.oncomplete = () => res();
+  });
+}
+
+function resolveAsset(val) {
+  if (typeof val === 'string' && val.startsWith('asset://')) {
+    return assetURLs[val.slice(8)] || '';
+  }
+  return val || '';
+}
+
+async function resolveAllAssets() {
+  // revoke previous object URLs
+  Object.values(assetURLs).forEach(u => { try { URL.revokeObjectURL(u); } catch(e){} });
+  assetURLs = {};
+  const keys = new Set();
+  ASSETS.forEach(a => {
+    const v = config[a.field];
+    if (typeof v === 'string' && v.startsWith('asset://')) keys.add(v.slice(8));
+  });
+  (config.links || []).forEach(l => {
+    if (l.iconData && l.iconData.startsWith('asset://')) keys.add(l.iconData.slice(8));
+  });
+  for (const key of keys) {
+    try { const blob = await idbGet(key); if (blob) assetURLs[key] = URL.createObjectURL(blob); }
+    catch(e) {}
+  }
+}
+
+// Called by file <input> onchange
+async function onAssetFile(id, input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const meta = ASSETS.find(a => a.id === id);
+  try {
+    await idbPut(id, file);
+    config[meta.field] = 'asset://' + id;
+    config.assetNames = config.assetNames || {};
+    config.assetNames[id] = file.name;
+    // clear URL text input (file takes precedence)
+    const urlEl = document.getElementById(meta.input); if (urlEl) urlEl.value = '';
+    if (assetURLs[id]) { try { URL.revokeObjectURL(assetURLs[id]); } catch(e){} }
+    assetURLs[id] = URL.createObjectURL(file);
+    updateFileName(id, file.name);
+    showToast(file.name + ' loaded');
+  } catch(e) { showToast('Could not load file'); }
+}
+
+async function clearAsset(id) {
+  const meta = ASSETS.find(a => a.id === id);
+  try { await idbDel(id); } catch(e){}
+  if (assetURLs[id]) { try { URL.revokeObjectURL(assetURLs[id]); } catch(e){} delete assetURLs[id]; }
+  config[meta.field] = '';
+  if (config.assetNames) delete config.assetNames[id];
+  const urlEl = document.getElementById(meta.input); if (urlEl) urlEl.value = '';
+  updateFileName(id, '');
+}
+
+function updateFileName(id, name) {
+  const fn = document.getElementById('fn-' + id);
+  const fc = document.getElementById('fc-' + id);
+  if (fn) fn.textContent = name || '';
+  if (fc) fc.style.display = name ? 'inline' : 'none';
+}
+
+function loadConfig() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('profileConfig') || '{}');
+    config = Object.assign({}, DEFAULT_CONFIG, saved);
+    // merge links
+    const savedLinks = saved.links || [];
+    config.links = DEFAULT_CONFIG.links.map(def => {
+      const found = savedLinks.find(l => l.id === def.id);
+      return found ? Object.assign({}, def, found) : def;
+    });
+  } catch(e) { config = Object.assign({}, DEFAULT_CONFIG); }
+  if (!config.assetNames || typeof config.assetNames !== 'object') config.assetNames = {};
+}
+
+function saveConfig() {
+  localStorage.setItem('profileConfig', JSON.stringify(config));
+}
+
+// ─── Apply config to DOM ───
+function applyConfig() {
+  const nameEl = document.getElementById('usernameEl');
+  nameEl.textContent = config.username || 'username';
+  nameEl.setAttribute('data-text', config.username || 'username');
+
+  applyBio();
+
+  const pb = document.getElementById('pronounsBadge');
+  const pe = document.getElementById('pronounsEl');
+  if (config.pronouns) { pe.textContent = config.pronouns; pb.style.display = 'flex'; }
+  else { pb.style.display = 'none'; }
+
+  const avatarSrc = resolveAsset(config.avatar) || DEFAULT_CONFIG.avatar;
+  const bgSrc = resolveAsset(config.bg) || DEFAULT_CONFIG.bg;
+  document.getElementById('avatarImg').src = avatarSrc;
+  document.getElementById('bg').style.backgroundImage = `url('${bgSrc}')`;
+  document.title = config.username || 'profile';
+
+  renderLinks();
+  applyPlayer();
+  applyExtras();
+  applySteam();
+
+  if (config.discordId) startLanyard(config.discordId);
+  else showRpcFallback();
+}
+
+// ─── Bio (typing or static) ───
+let typingTimer = null;
+function applyBio() {
+  const bioEl = document.getElementById('bioEl');
+  const text = config.bio || '';
+  if (typingTimer) { clearTimeout(typingTimer); typingTimer = null; }
+  if (!config.fxTyping || !text) {
+    bioEl.textContent = text;
+    return;
+  }
+  bioEl.innerHTML = '<span class="bio-text"></span><span class="type-cursor"></span>';
+  const target = bioEl.querySelector('.bio-text');
+  let i = 0;
+  (function step() {
+    target.textContent = text.slice(0, i);
+    if (i <= text.length) { i++; typingTimer = setTimeout(step, 55); }
+    else { setTimeout(() => { const c = bioEl.querySelector('.type-cursor'); if (c) c.remove(); }, 1200); }
+  })();
+}
+
+// ─── Extras: apply feature toggles ───
+function applyExtras() {
+  // Particles
+  const canvas = document.getElementById('particles');
+  if (config.fxParticles) { canvas.style.display = 'block'; startParticles(); }
+  else { canvas.style.display = 'none'; stopParticles(); }
+
+  // Tilt
+  if (config.fxTilt) enableTilt(); else disableTilt();
+
+  // Glitch
+  const nameEl = document.getElementById('usernameEl');
+  nameEl.classList.toggle('glitch', !!config.fxGlitch);
+  if (config.fxGlitch) triggerGlitch();
+
+  // Ambient (corner glows + aurora + shooting stars + grain + avatar aura)
+  const ambient = !!config.fxAmbient;
+  document.querySelector('.corner-glows').style.display = ambient ? 'block' : 'none';
+  document.querySelector('.aurora').style.display = ambient ? 'block' : 'none';
+  document.querySelector('.shooting-stars').style.display = ambient ? 'block' : 'none';
+  document.querySelector('.grain').style.display = ambient ? 'block' : 'none';
+  document.querySelector('.avatar-ring').classList.toggle('no-aura', !ambient);
+
+  // Local time
+  applyLocalTime();
+}
+
+// ─── Links ───
+function renderLinks() {
+  const row = document.getElementById('linksRow');
+  row.innerHTML = '';
+  (config.links || []).forEach(link => {
+    const isDiscordCopy = link.id === 'discord' && config.discordUsername;
+    if (!link.url && !isDiscordCopy) return;
+    const a = document.createElement('a');
+    a.className = 'link-icon-btn';
+    const customIcon = link.iconData ? resolveAsset(link.iconData) : '';
+    a.innerHTML = customIcon ? `<img src="${customIcon}" alt="">` : (ICONS[link.icon] || ICONS.link);
+
+    if (isDiscordCopy) {
+      a.href = link.url ? (link.url.startsWith('http') ? link.url : 'https://' + link.url) : '#';
+      a.setAttribute('data-tip', 'Copy @' + config.discordUsername);
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        copyToClipboard(config.discordUsername, 'Discord username copied!');
+      });
+    } else {
+      a.href = link.url.startsWith('http') ? link.url : 'https://' + link.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.setAttribute('data-tip', link.label);
+    }
+    row.appendChild(a);
+  });
+}
+
+// ─── Clipboard ───
+function copyToClipboard(text, msg) {
+  const done = () => { showCopyToast(msg || 'Copied!'); playSound('copy'); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else { fallbackCopy(text, done); }
+}
+function fallbackCopy(text, cb) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta); cb && cb();
+}
+function showCopyToast(msg) {
+  const t = document.getElementById('copyToast');
+  document.getElementById('copyToastText').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ─── Discord Lanyard ───
+async function startLanyard(userId) {
+  if (lanyardInterval) clearInterval(lanyardInterval);
+  await fetchLanyard(userId);
+  lanyardInterval = setInterval(() => fetchLanyard(userId), 6000);
+}
+
+async function fetchLanyard(userId) {
+  try {
+    const res = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
+    const json = await res.json();
+    if (!json.success) { showRpcFallback(); return; }
+    applyLanyard(json.data);
+  } catch(e) { showRpcFallback(); }
+}
+
+function applyLanyard(data) {
+  const { discord_user, discord_status, activities, listening_to_spotify, spotify } = data;
+
+  // User avatar
+  const avatarHash = discord_user.avatar;
+  const userId = discord_user.id;
+  const avatarUrl = avatarHash
+    ? `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.${avatarHash.startsWith('a_') ? 'gif' : 'png'}?size=128`
+    : `https://cdn.discordapp.com/embed/avatars/${parseInt(discord_user.discriminator||'0') % 5}.png`;
+
+  // Update main avatar too if no custom set
+  if (!config.avatar || config.avatar === DEFAULT_CONFIG.avatar) {
+    document.getElementById('avatarImg').src = avatarUrl;
+  }
+
+  document.getElementById('rpcUserAvatar').src = avatarUrl;
+  document.getElementById('rpcDisplayName').textContent = discord_user.global_name || discord_user.username;
+
+  // Status dot
+  const dot = document.getElementById('statusDot');
+  dot.className = 'status-indicator';
+  if (discord_status === 'idle') dot.classList.add('idle');
+  else if (discord_status === 'dnd') dot.classList.add('dnd');
+  else if (discord_status === 'offline') dot.classList.add('offline');
+
+  // Spotify
+  if (listening_to_spotify && spotify) {
+    document.getElementById('rpcDetail').innerHTML =
+      `<span style="color:#1db954;font-size:0.66rem;font-weight:600;">♫ SPOTIFY</span><br>` +
+      `<span class="highlight">${escHtml(spotify.song)}</span> · ${escHtml(spotify.artist)}`;
+    document.getElementById('rpcStatusText').textContent = '';
+    const albumImg = document.getElementById('rpcAlbumArt');
+    albumImg.src = spotify.album_art_url || '';
+    albumImg.style.display = spotify.album_art_url ? 'block' : 'none';
+    document.getElementById('rpcPlaceholder').style.display = 'none';
+    document.getElementById('rpcActivityImg').style.display = 'none';
+    document.getElementById('rpcActivityImg').src = '';
+    if (spotify.timestamps && spotify.timestamps.start && spotify.timestamps.end) {
+      startSpotifyProgress(spotify.timestamps);
+    } else { stopSpotifyProgress(); }
+    return;
+  }
+  stopSpotifyProgress();
+
+  // Other activities
+  const activity = (activities || []).find(a => a.type !== 4 && a.type !== 2);
+  document.getElementById('rpcAlbumArt').style.display = 'none';
+
+  if (activity) {
+    let detail = escHtml(activity.name);
+    if (activity.details) detail += `<br><span style="font-size:0.7rem;color:rgba(255,255,255,0.4)">${escHtml(activity.details)}</span>`;
+    document.getElementById('rpcDetail').innerHTML = detail;
+    document.getElementById('rpcStatusText').textContent = '';
+
+    // Activity image
+    const largeImg = activity.assets?.large_image;
+    const actImgEl = document.getElementById('rpcActivityImg');
+    if (largeImg) {
+      let imgUrl = '';
+      if (largeImg.startsWith('mp:external/')) {
+        imgUrl = 'https://media.discordapp.net/external/' + largeImg.replace('mp:external/', '');
+      } else if (largeImg.startsWith('spotify:')) {
+        imgUrl = '';
+      } else {
+        imgUrl = `https://cdn.discordapp.com/app-assets/${activity.application_id}/${largeImg}.png`;
+      }
+      if (imgUrl) { actImgEl.src = imgUrl; actImgEl.style.display = 'block'; }
+      else actImgEl.style.display = 'none';
+    } else {
+      actImgEl.style.display = 'none';
+    }
+    document.getElementById('rpcPlaceholder').style.display = 'none';
+  } else {
+    // Custom status or idle
+    const customStatus = (activities || []).find(a => a.type === 4);
+    document.getElementById('rpcDetail').innerHTML = customStatus
+      ? `${customStatus.emoji?.name || ''} ${escHtml(customStatus.state || '')}`.trim() || 'No activity'
+      : 'No activity';
+    document.getElementById('rpcStatusText').textContent = '';
+    document.getElementById('rpcActivityImg').style.display = 'none';
+    document.getElementById('rpcPlaceholder').style.display = 'none';
+  }
+}
+
+function showRpcFallback() {
+  document.getElementById('rpcDetail').textContent = 'Set your Discord ID in settings';
+  document.getElementById('rpcStatusText').textContent = '';
+  document.getElementById('rpcAlbumArt').style.display = 'none';
+  document.getElementById('rpcActivityImg').style.display = 'none';
+  document.getElementById('rpcPlaceholder').style.display = 'none';
+  stopSpotifyProgress();
+}
+
+// ─── Spotify live progress ───
+let spotifyTimer = null;
+function startSpotifyProgress(ts) {
+  stopSpotifyProgress();
+  const bar = document.getElementById('spotifyProgress');
+  const fill = document.getElementById('spotifyProgressFill');
+  bar.style.display = 'block';
+  const update = () => {
+    const span = ts.end - ts.start;
+    if (span <= 0) return;
+    const pct = Math.max(0, Math.min(100, ((Date.now() - ts.start) / span) * 100));
+    fill.style.width = pct + '%';
+  };
+  update();
+  spotifyTimer = setInterval(update, 1000);
+}
+function stopSpotifyProgress() {
+  if (spotifyTimer) { clearInterval(spotifyTimer); spotifyTimer = null; }
+  const bar = document.getElementById('spotifyProgress');
+  if (bar) bar.style.display = 'none';
+}
+
+// ─── Steam Card (via Cloudflare Worker) ───
+let steamInterval = null;
+function workerBase() { return (config.workerUrl || '').trim().replace(/\/+$/, ''); }
+
+function applySteam() {
+  if (steamInterval) { clearInterval(steamInterval); steamInterval = null; }
+  const card = document.getElementById('steamCard');
+  if (!config.showSteam || !workerBase()) { card.style.display = 'none'; return; }
+  card.style.display = 'flex';
+  document.getElementById('steamDetail').textContent = 'Loading Steam…';
+  fetchSteam();
+  steamInterval = setInterval(fetchSteam, 60000);
+}
+
+async function fetchSteam() {
+  const base = workerBase();
+  if (!base) return;
+  try {
+    const res = await fetch(base + '/steam');
+    const data = await res.json();
+    if (!data || !data.ok || !data.player) { steamFallback('Steam unavailable'); return; }
+    applySteamData(data.player, data.game_count);
+  } catch (e) {
+    steamFallback('Steam unavailable (check Worker URL)');
+  }
+}
+
+function applySteamData(player, gameCount) {
+  document.getElementById('steamAvatar').src = player.avatarfull || '';
+  document.getElementById('steamName').textContent = player.personaname || 'Steam';
+  const dot = document.getElementById('steamStateDot');
+  dot.className = 'steam-state-dot';
+  const detail = document.getElementById('steamDetail');
+  const gameArt = document.getElementById('steamGameArt');
+
+  if (player.gameextrainfo) {
+    dot.classList.add('ingame');
+    detail.innerHTML = `<span class="ingame-txt">▶ In-Game</span> · ${escHtml(player.gameextrainfo)}`;
+    if (player.gameid) {
+      gameArt.src = `https://cdn.cloudflare.steamstatic.com/steam/apps/${player.gameid}/capsule_184x69.jpg`;
+      gameArt.style.display = 'block';
+      gameArt.onerror = () => { gameArt.style.display = 'none'; };
+    } else { gameArt.style.display = 'none'; }
+  } else {
+    gameArt.style.display = 'none';
+    const states = {0:'Offline',1:'Online',2:'Busy',3:'Away',4:'Snooze',5:'Looking to trade',6:'Looking to play'};
+    const st = player.personastate || 0;
+    if (st !== 0) dot.classList.add('online');
+    detail.textContent = states[st] || 'Offline';
+  }
+
+  const meta = document.getElementById('steamMeta');
+  meta.textContent = (typeof gameCount === 'number') ? `${gameCount.toLocaleString()} games in library` : '';
+}
+
+function steamFallback(msg) {
+  document.getElementById('steamDetail').textContent = msg;
+  document.getElementById('steamMeta').textContent = '';
+  document.getElementById('steamGameArt').style.display = 'none';
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ─── Player ───
+function applyPlayer() {
+  const player = document.getElementById('musicPlayer');
+  player.style.display = config.showPlayer ? 'block' : 'none';
+  if (!config.showPlayer) return;
+
+  document.getElementById('playerTitle').textContent = config.songTitle || 'Song Title';
+  document.getElementById('playerArtist').textContent = config.songArtist || '';
+
+  const art = document.getElementById('playerArt');
+  const albumSrc = resolveAsset(config.albumArt);
+  if (albumSrc) {
+    art.innerHTML = `<img src="${albumSrc}" alt="art">`;
+  } else {
+    art.innerHTML = '🎵';
+  }
+
+  playerTotalSec = parseInt(config.songDuration) || 0;
+  document.getElementById('playerDuration').textContent = playerTotalSec ? formatTime(playerTotalSec) : '0:00';
+  document.getElementById('playerCurrentTime').textContent = '0:00';
+  document.getElementById('progressFill').style.width = '0%';
+  playerCurrentSec = 0;
+
+  const audioSrc = resolveAsset(config.audioUrl);
+  if (audioSrc) {
+    audio.src = audioSrc;
+    audio.preload = 'metadata';
+    audio.load(); // triggers 'loadedmetadata' → auto duration
+  } else {
+    audio.removeAttribute('src');
+  }
+
+  buildVisualizer();
+}
+
+// ─── Visualizer ───
+const VIZ_BARS = 14;
+let vizAnalyser = null, vizData = null, vizRaf = null, vizCtx = null, vizSource = null;
+function buildVisualizer() {
+  const v = document.getElementById('visualizer');
+  if (!v.children.length) {
+    for (let i = 0; i < VIZ_BARS; i++) {
+      const b = document.createElement('div');
+      b.className = 'viz-bar';
+      b.style.animationDelay = (i * 0.06) + 's';
+      v.appendChild(b);
+    }
+  }
+}
+function isUploadedAudio() {
+  return typeof config.audioUrl === 'string' && config.audioUrl.startsWith('asset://');
+}
+function setVisualizer(playing) {
+  const v = document.getElementById('visualizer');
+  v.classList.toggle('active', playing);
+  if (isUploadedAudio()) {
+    // real frequency analysis (safe: blob is same-origin, never silences audio)
+    if (playing) startRealViz(); else stopRealViz();
+    v.classList.remove('playing');
+  } else {
+    // mock CSS animation (remote URLs / no audio — avoids CORS silencing)
+    v.classList.toggle('playing', playing);
+  }
+}
+function startRealViz() {
+  try {
+    if (!vizCtx) {
+      vizCtx = new (window.AudioContext || window.webkitAudioContext)();
+      vizSource = vizCtx.createMediaElementSource(audio);
+      vizAnalyser = vizCtx.createAnalyser();
+      vizAnalyser.fftSize = 64;
+      vizSource.connect(vizAnalyser);
+      vizAnalyser.connect(vizCtx.destination);
+      vizData = new Uint8Array(vizAnalyser.frequencyBinCount);
+    }
+    if (vizCtx.state === 'suspended') vizCtx.resume();
+    const bars = document.querySelectorAll('.viz-bar');
+    (function loop() {
+      vizAnalyser.getByteFrequencyData(vizData);
+      bars.forEach((bar, i) => {
+        const val = vizData[i + 1] || 0;
+        bar.style.height = Math.max(12, (val / 255) * 100) + '%';
+      });
+      vizRaf = requestAnimationFrame(loop);
+    })();
+  } catch(e) { document.getElementById('visualizer').classList.add('playing'); }
+}
+function stopRealViz() {
+  if (vizRaf) { cancelAnimationFrame(vizRaf); vizRaf = null; }
+  document.querySelectorAll('.viz-bar').forEach(b => b.style.height = '20%');
+}
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2,'0')}`;
+}
+
+function playerToggle() {
+  if (config.audioUrl) {
+    if (playerPlaying) { audio.pause(); stopProgress(); }
+    else { audio.play().catch(()=>{}); startProgress(); }
+    playerPlaying = !playerPlaying;
+  } else {
+    playerPlaying = !playerPlaying;
+    if (playerPlaying) startProgress(); else stopProgress();
+  }
+  updatePlayBtn();
+  setVisualizer(playerPlaying);
+  playSound('click');
+}
+
+function updatePlayBtn() {
+  document.getElementById('playIcon').setAttribute('d', playerPlaying
+    ? 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'
+    : 'M8 5v14l11-7z');
+}
+
+function startProgress() {
+  if (playerInterval) clearInterval(playerInterval);
+  playerInterval = setInterval(() => {
+    if (config.audioUrl) { playerCurrentSec = audio.currentTime; }
+    else { playerCurrentSec += 1; }
+    const total = config.audioUrl ? (audio.duration || playerTotalSec) : playerTotalSec;
+    if (total && playerCurrentSec >= total) { playerCurrentSec = 0; if (!config.audioUrl) stopProgress(); playerPlaying = false; updatePlayBtn(); setVisualizer(false); }
+    document.getElementById('playerCurrentTime').textContent = formatTime(playerCurrentSec);
+    document.getElementById('progressFill').style.width = total ? `${(playerCurrentSec/total)*100}%` : '0%';
+  }, 1000);
+}
+
+function stopProgress() { clearInterval(playerInterval); playerInterval = null; }
+
+function playerPrev() { playerCurrentSec = 0; if(config.audioUrl){audio.currentTime=0;} document.getElementById('playerCurrentTime').textContent='0:00'; document.getElementById('progressFill').style.width='0%'; }
+function playerNext() { playerCurrentSec = 0; if(config.audioUrl){audio.currentTime=0;audio.pause();} playerPlaying=false; updatePlayBtn(); stopProgress(); setVisualizer(false); }
+
+function seekPlayer(e) {
+  const track = document.getElementById('progressTrack');
+  const rect = track.getBoundingClientRect();
+  const ratio = (e.clientX - rect.left) / rect.width;
+  const total = config.audioUrl ? (audio.duration || playerTotalSec) : playerTotalSec;
+  playerCurrentSec = Math.max(0, Math.min(ratio * total, total));
+  if (config.audioUrl) audio.currentTime = playerCurrentSec;
+  document.getElementById('playerCurrentTime').textContent = formatTime(playerCurrentSec);
+  document.getElementById('progressFill').style.width = `${ratio * 100}%`;
+}
+
+// ─── Mute ───
+let playerMuted = false;
+function playerMute() {
+  playerMuted = !playerMuted;
+  audio.muted = playerMuted;
+  document.getElementById('muteBtn').classList.toggle('muted', playerMuted);
+  document.getElementById('muteIcon').setAttribute('d', playerMuted
+    ? 'M3 9v6h4l5 5V4L7 9H3zm13.59 3 2.7-2.7-1.42-1.41L15.17 10.6 12.46 7.9l-1.41 1.41L13.76 12l-2.71 2.7 1.41 1.41 2.7-2.7 2.71 2.7 1.41-1.41z'
+    : 'M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12z');
+  playSound('click');
+}
+function setVolume(v) {
+  audio.volume = Math.max(0, Math.min(1, v / 100));
+  if (playerMuted && v > 0) { // unmute when user drags up from 0
+    playerMuted = false; audio.muted = false;
+    document.getElementById('muteBtn').classList.remove('muted');
+    document.getElementById('muteIcon').setAttribute('d', 'M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12z');
+  }
+}
+
+// Auto-detect duration from the loaded audio file
+audio.addEventListener('loadedmetadata', () => {
+  if (isFinite(audio.duration) && audio.duration > 0) {
+    playerTotalSec = audio.duration;
+    config.songDuration = Math.round(audio.duration);
+    document.getElementById('playerDuration').textContent = formatTime(playerTotalSec);
+    const durField = document.getElementById('s-songDuration');
+    if (durField) durField.value = Math.round(audio.duration);
+  }
+});
+
+// ─── Settings ───
+let settingsOpen = false;
+let authenticated = false;
+
+function openSettings() {
+  document.getElementById('modalBg').classList.add('open');
+  document.getElementById('pwScreen').classList.remove('hidden');
+  document.getElementById('settingsScreen').classList.remove('visible');
+  document.getElementById('pwInput').value = '';
+  authenticated = false;
+  setTimeout(() => document.getElementById('pwInput').focus(), 100);
+}
+
+function closeSettings() { document.getElementById('modalBg').classList.remove('open'); }
+
+function outsideClick(e) { if (e.target === document.getElementById('modalBg')) closeSettings(); }
+
+async function checkPw() {
+  const pwEl = document.getElementById('pwInput');
+  const pw = pwEl.value;
+  const base = workerBase();
+  let ok = false;
+
+  if (base) {
+    // Validate against the Worker (password lives there as a secret, not in this page)
+    const btn = document.querySelector('#pwScreen .modal-btn');
+    if (btn) { btn.textContent = 'Checking…'; btn.disabled = true; }
+    try {
+      const res = await fetch(base + '/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw }),
+      });
+      const data = await res.json();
+      ok = !!(data && data.ok);
+    } catch (e) {
+      // Worker set but unreachable → deny (do NOT fall back to the temp password,
+      // so the bootstrap password can't be used once you've connected a Worker).
+      ok = false;
+    }
+    if (btn) { btn.textContent = 'Unlock'; btn.disabled = false; }
+  } else {
+    // No Worker set yet → temporary local password
+    ok = (pw === (config.password || '1234'));
+  }
+
+  if (ok) {
+    authenticated = true;
+    document.getElementById('pwScreen').classList.add('hidden');
+    document.getElementById('settingsScreen').classList.add('visible');
+    fillSettingsForm();
+  } else {
+    pwEl.style.borderColor = 'rgba(237,66,69,0.6)';
+    setTimeout(() => pwEl.style.borderColor = '', 600);
+  }
+}
+
+function fillSettingsForm() {
+  document.getElementById('s-username').value = config.username || '';
+  document.getElementById('s-pronouns').value = config.pronouns || '';
+  document.getElementById('s-bio').value = config.bio || '';
+  document.getElementById('s-discordId').value = config.discordId || '';
+  document.getElementById('s-discordUsername').value = config.discordUsername || '';
+  document.getElementById('s-showPlayer').checked = !!config.showPlayer;
+  document.getElementById('s-songTitle').value = config.songTitle || '';
+  document.getElementById('s-songArtist').value = config.songArtist || '';
+  document.getElementById('s-songDuration').value = config.songDuration || '';
+
+  // asset fields: show URL only when it's not a file; show filename + clear when it's a file
+  const isAsset = v => typeof v === 'string' && v.startsWith('asset://');
+  ASSETS.forEach(a => {
+    const v = config[a.field];
+    const urlEl = document.getElementById(a.input);
+    if (urlEl) urlEl.value = isAsset(v) ? '' : (v || '');
+    updateFileName(a.id, isAsset(v) ? (config.assetNames && config.assetNames[a.id] || 'uploaded file') : '');
+  });
+
+  // steam
+  document.getElementById('s-showSteam').checked = !!config.showSteam;
+  document.getElementById('s-workerUrl').value = config.workerUrl || '';
+
+  // extras
+  document.getElementById('s-fxParticles').checked = !!config.fxParticles;
+  document.getElementById('s-fxTilt').checked = !!config.fxTilt;
+  document.getElementById('s-fxTyping').checked = !!config.fxTyping;
+  document.getElementById('s-fxGlitch').checked = !!config.fxGlitch;
+  document.getElementById('s-fxAmbient').checked = config.fxAmbient !== false;
+  document.getElementById('s-fxSounds').checked = !!config.fxSounds;
+  document.getElementById('s-showTime').checked = !!config.showTime;
+  document.getElementById('s-timezone').value = config.timezone || '';
+  document.getElementById('s-globalCounter').checked = !!config.globalCounter;
+  document.getElementById('s-counterKey').value = config.counterKey || '';
+
+  // Links editor (with custom icon upload)
+  const ed = document.getElementById('linksEditor');
+  ed.innerHTML = '';
+  (config.links || []).forEach(link => {
+    const row = document.createElement('div');
+    row.className = 'link-editor-row';
+    const iconUrl = link.iconData ? resolveAsset(link.iconData) : '';
+    const preview = iconUrl
+      ? `<img src="${iconUrl}" alt="">`
+      : `<svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>`;
+    row.innerHTML = `
+      <button type="button" class="link-icon-upload" id="liu-${link.id}" title="Upload custom PNG icon"
+        onclick="document.getElementById('li-${link.id}').click()">${preview}</button>
+      <input type="file" id="li-${link.id}" accept="image/*" style="display:none">
+      <span class="link-editor-label">${link.label}</span>
+      <input class="modal-input" data-link-id="${link.id}" placeholder="https://..." value="${link.url || ''}">
+    `;
+    ed.appendChild(row);
+    row.querySelector('#li-' + link.id).addEventListener('change', function(){ onLinkIcon(link.id, this); });
+  });
+}
+
+async function onLinkIcon(id, input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const key = 'linkicon_' + id;
+  try {
+    await idbPut(key, file);
+    const link = config.links.find(l => l.id === id);
+    if (link) link.iconData = 'asset://' + key;
+    if (assetURLs[key]) { try { URL.revokeObjectURL(assetURLs[key]); } catch(e){} }
+    assetURLs[key] = URL.createObjectURL(file);
+    const btn = document.getElementById('liu-' + id);
+    if (btn) btn.innerHTML = `<img src="${assetURLs[key]}" alt="">`;
+    showToast('Icon set');
+  } catch(e) { showToast('Could not load icon'); }
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    const tabs = ['profile','links','media','discord','steam','extras'];
+    b.classList.toggle('active', tabs[i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function saveSettings() {
+  config.username = document.getElementById('s-username').value.trim();
+  config.pronouns = document.getElementById('s-pronouns').value.trim();
+  config.bio = document.getElementById('s-bio').value.trim();
+  config.discordId = document.getElementById('s-discordId').value.trim();
+  config.discordUsername = document.getElementById('s-discordUsername').value.trim();
+  config.showPlayer = document.getElementById('s-showPlayer').checked;
+  config.songTitle = document.getElementById('s-songTitle').value.trim();
+  config.songArtist = document.getElementById('s-songArtist').value.trim();
+  config.songDuration = parseInt(document.getElementById('s-songDuration').value) || 0;
+
+  // asset fields: pasted URL overrides an uploaded file; otherwise keep file marker
+  ASSETS.forEach(a => {
+    const urlVal = (document.getElementById(a.input).value || '').trim();
+    const cur = config[a.field];
+    if (urlVal) {
+      config[a.field] = urlVal;
+      if (config.assetNames) delete config.assetNames[a.id];
+    } else if (typeof cur === 'string' && cur.startsWith('asset://')) {
+      // keep existing uploaded file
+    } else {
+      config[a.field] = '';
+    }
+  });
+
+  // steam
+  config.showSteam = document.getElementById('s-showSteam').checked;
+  config.workerUrl = document.getElementById('s-workerUrl').value.trim();
+
+  // extras
+  config.fxParticles = document.getElementById('s-fxParticles').checked;
+  config.fxTilt = document.getElementById('s-fxTilt').checked;
+  config.fxTyping = document.getElementById('s-fxTyping').checked;
+  config.fxGlitch = document.getElementById('s-fxGlitch').checked;
+  config.fxAmbient = document.getElementById('s-fxAmbient').checked;
+  config.fxSounds = document.getElementById('s-fxSounds').checked;
+  config.showTime = document.getElementById('s-showTime').checked;
+  config.timezone = document.getElementById('s-timezone').value.trim();
+  config.globalCounter = document.getElementById('s-globalCounter').checked;
+  config.counterKey = document.getElementById('s-counterKey').value.trim();
+
+  const newPw = document.getElementById('s-pw').value;
+  if (newPw) config.password = newPw;
+
+  document.querySelectorAll('[data-link-id]').forEach(input => {
+    const link = config.links.find(l => l.id === input.dataset.linkId);
+    if (link) link.url = input.value.trim();
+  });
+
+  saveConfig();
+  applyConfig();
+  closeSettings();
+  showToast('Saved!');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ─── View Counter ───
+function animateCount(el, v) {
+  let cur = 0;
+  const step = Math.max(1, Math.ceil(v / 40));
+  const iv = setInterval(() => {
+    cur = Math.min(cur + step, v);
+    el.textContent = cur.toLocaleString();
+    if (cur >= v) clearInterval(iv);
+  }, 25);
+}
+async function initViews() {
+  const el = document.getElementById('viewNum');
+  // local fallback count
+  let localV = parseInt(localStorage.getItem('profileViews') || '0') + 1;
+  localStorage.setItem('profileViews', localV);
+
+  if (config.globalCounter && config.counterKey) {
+    try {
+      const ns = 'profile';
+      const key = config.counterKey.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64) || 'page';
+      const res = await fetch(`https://api.counterapi.dev/v1/${ns}/${key}/up`);
+      const json = await res.json();
+      const count = json.count ?? json.value ?? json.data?.count;
+      if (typeof count === 'number') { animateCount(el, count); return; }
+    } catch(e) { /* fall through to local */ }
+  }
+  animateCount(el, localV);
+}
+
+// ─── Particle Canvas (mouse-reactive) ───
+let particleState = null;
+function startParticles() {
+  if (particleState) return;
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [];
+  const mouse = { x: -9999, y: -9999 };
+  const COUNT = window.innerWidth < 600 ? 45 : 80;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  function makeParticles() {
+    particles = [];
+    for (let i = 0; i < COUNT; i++) {
+      particles.push({
+        x: Math.random() * w, y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 1.6 + 0.6
+      });
+    }
+  }
+  function tick() {
+    ctx.clearRect(0, 0, w, h);
+    for (const p of particles) {
+      // drift
+      p.x += p.vx; p.y += p.vy;
+      // mouse repel
+      const dx = p.x - mouse.x, dy = p.y - mouse.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 120) {
+        const force = (120 - dist) / 120;
+        p.x += (dx / dist) * force * 1.4;
+        p.y += (dy / dist) * force * 1.4;
+      }
+      // wrap
+      if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+      if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.fill();
+    }
+    // connecting lines
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const a = particles[i], b = particles[j];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < 110) {
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = `rgba(255,255,255,${0.10 * (1 - d / 110)})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+    particleState.raf = requestAnimationFrame(tick);
+  }
+  const onMove = e => { mouse.x = e.clientX; mouse.y = e.clientY; };
+  const onTouch = e => { if (e.touches[0]) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; } };
+  const onLeave = () => { mouse.x = -9999; mouse.y = -9999; };
+
+  particleState = { ctx, resize, onMove, onTouch, onLeave, raf: null };
+  resize(); makeParticles();
+  window.addEventListener('resize', () => { resize(); makeParticles(); });
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('touchmove', onTouch, { passive: true });
+  window.addEventListener('mouseout', onLeave);
+  tick();
+}
+function stopParticles() {
+  if (!particleState) return;
+  cancelAnimationFrame(particleState.raf);
+  window.removeEventListener('mousemove', particleState.onMove);
+  window.removeEventListener('touchmove', particleState.onTouch);
+  window.removeEventListener('mouseout', particleState.onLeave);
+  const canvas = document.getElementById('particles');
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  particleState = null;
+}
+
+// ─── 3D Tilt ───
+const tiltHandlers = new Map();
+function enableTilt() {
+  document.querySelectorAll('.tilt').forEach(card => {
+    if (tiltHandlers.has(card)) return;
+    const onMove = e => {
+      const rect = card.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width;
+      const py = (e.clientY - rect.top) / rect.height;
+      const rx = (py - 0.5) * -10;
+      const ry = (px - 0.5) * 12;
+      card.style.transform = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
+      const glare = card.querySelector('.tilt-glare');
+      if (glare) { glare.style.opacity = '1'; glare.style.setProperty('--gx', px * 100 + '%'); glare.style.setProperty('--gy', py * 100 + '%'); }
+    };
+    const onLeave = () => {
+      card.style.transform = '';
+      const glare = card.querySelector('.tilt-glare');
+      if (glare) glare.style.opacity = '0';
+    };
+    card.addEventListener('mousemove', onMove);
+    card.addEventListener('mouseleave', onLeave);
+    tiltHandlers.set(card, { onMove, onLeave });
+  });
+}
+function disableTilt() {
+  tiltHandlers.forEach((h, card) => {
+    card.removeEventListener('mousemove', h.onMove);
+    card.removeEventListener('mouseleave', h.onLeave);
+    card.style.transform = '';
+  });
+  tiltHandlers.clear();
+}
+
+// ─── Glitch trigger ───
+function triggerGlitch() {
+  const el = document.getElementById('usernameEl');
+  if (!config.fxGlitch) return;
+  el.classList.add('glitching');
+  setTimeout(() => el.classList.remove('glitching'), 600);
+}
+
+// ─── Local Time ───
+let timeInterval = null;
+function applyLocalTime() {
+  const widget = document.getElementById('localTime');
+  if (timeInterval) { clearInterval(timeInterval); timeInterval = null; }
+  if (!config.showTime) { widget.style.display = 'none'; return; }
+  widget.style.display = 'inline-flex';
+  const update = () => {
+    const opts = { hour: '2-digit', minute: '2-digit', hour12: false };
+    if (config.timezone) opts.timeZone = config.timezone;
+    try {
+      document.getElementById('ltClock').textContent =
+        new Intl.DateTimeFormat('en-GB', opts).format(new Date());
+    } catch(e) {
+      document.getElementById('ltClock').textContent =
+        new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+    }
+  };
+  update();
+  timeInterval = setInterval(update, 1000 * 15);
+}
+
+// ─── UI Sound Engine (synthesized, no files) ───
+let soundCtx = null;
+function playSound(type) {
+  if (!config.fxSounds) return;
+  try {
+    if (!soundCtx) soundCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (soundCtx.state === 'suspended') soundCtx.resume();
+    const o = soundCtx.createOscillator();
+    const g = soundCtx.createGain();
+    o.connect(g); g.connect(soundCtx.destination);
+    const now = soundCtx.currentTime;
+    let freq = 520, vol = 0.04, dur = 0.06;
+    if (type === 'hover') { freq = 680; vol = 0.018; dur = 0.045; }
+    else if (type === 'click') { freq = 440; vol = 0.05; dur = 0.07; }
+    else if (type === 'copy') { freq = 760; vol = 0.05; dur = 0.10; }
+    o.type = 'sine';
+    o.frequency.setValueAtTime(freq, now);
+    if (type === 'copy') o.frequency.exponentialRampToValueAtTime(freq * 1.4, now + dur);
+    g.gain.setValueAtTime(vol, now);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    o.start(now); o.stop(now + dur);
+  } catch(e) {}
+}
+function bindSounds() {
+  document.body.addEventListener('mouseover', e => {
+    if (e.target.closest('.link-icon-btn, .player-btn, .settings-trigger, .modal-btn, .tab-btn')) playSound('hover');
+  });
+  document.body.addEventListener('click', e => {
+    if (e.target.closest('.link-icon-btn, .modal-btn, .tab-btn, .settings-trigger')) playSound('click');
+  });
+}
+
+// ─── Tab title / favicon changer ───
+function bindTitleChanger() {
+  const original = () => config.username || 'profile';
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) document.title = `${original()} — come back! 👀`;
+    else document.title = original();
+  });
+}
+
+// ─── Download publish-ready index.html ───
+async function downloadPublishReady() {
+  // 1. Save current panel state first so the freshest values are in `config`
+  try { saveSettings(); } catch(e) {}
+
+  // 2. Fetch the page's own HTML source. location.href works whether opened
+  //    via http(s):// (deployed) or file:// (local) in most browsers.
+  let html;
+  try {
+    const res = await fetch(location.href, { cache: 'no-store' });
+    html = await res.text();
+  } catch (e) {
+    showToast('Could not read page source. Open via a web server.');
+    return;
+  }
+
+  // 3. Build the new DEFAULT_CONFIG from the live config — but DO NOT bake
+  //    "asset://" markers, since those point at this device's IndexedDB and
+  //    won't exist for visitors. Replace them with empty so visitors fall back.
+  const cleaned = JSON.parse(JSON.stringify(config));
+  ASSETS.forEach(a => {
+    if (typeof cleaned[a.field] === 'string' && cleaned[a.field].startsWith('asset://')) {
+      cleaned[a.field] = '';
+    }
+  });
+  (cleaned.links || []).forEach(l => {
+    if (typeof l.iconData === 'string' && l.iconData.startsWith('asset://')) delete l.iconData;
+  });
+  delete cleaned.assetNames;
+
+  // Wipe the bootstrap password from the baked file — auth is via Worker only.
+  cleaned.password = '';
+
+  const configBlock = 'const DEFAULT_CONFIG = ' + JSON.stringify(cleaned, null, 2) + ';';
+
+  // 4. Replace the existing DEFAULT_CONFIG block in the source. Match from the
+  //    `const DEFAULT_CONFIG = {` opener to the matching closing `};` by
+  //    counting braces. Safer than a single regex.
+  const startMarker = 'const DEFAULT_CONFIG = {';
+  const startIdx = html.indexOf(startMarker);
+  if (startIdx === -1) { showToast('Could not locate DEFAULT_CONFIG in source.'); return; }
+  let depth = 0, endIdx = -1;
+  for (let i = startIdx + startMarker.length - 1; i < html.length; i++) {
+    const ch = html[i];
+    if (ch === '{') depth++;
+    else if (ch === '}') { depth--; if (depth === 0) { endIdx = i + 1; break; } }
+  }
+  if (endIdx === -1) { showToast('Could not parse DEFAULT_CONFIG block.'); return; }
+  // include trailing semicolon if present
+  if (html[endIdx] === ';') endIdx++;
+
+  const baked = html.slice(0, startIdx) + configBlock + html.slice(endIdx);
+
+  // 5. Trigger download as index.html
+  const blob = new Blob([baked], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'index.html';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+  // 6. Warn user if any uploaded assets won't ship with the file
+  const lostAssets = [];
+  ASSETS.forEach(a => {
+    if (typeof config[a.field] === 'string' && config[a.field].startsWith('asset://')) lostAssets.push(a.id);
+  });
+  (config.links || []).forEach(l => {
+    if (typeof l.iconData === 'string' && l.iconData.startsWith('asset://')) lostAssets.push('link icon: ' + l.id);
+  });
+  if (lostAssets.length) {
+    setTimeout(() => showToast('index.html downloaded — but uploaded files (' + lostAssets.join(', ') + ') won\'t ship. Use URLs for those.'), 200);
+  } else {
+    showToast('index.html ready — drag it to Netlify!');
+  }
+}
+
+
+(async function init() {
+  loadConfig();
+  try { await resolveAllAssets(); } catch(e) {}
+  applyConfig();
+  initViews();
+  bindSounds();
+  bindTitleChanger();
+})();
+</script>
+</body>
+</html>
