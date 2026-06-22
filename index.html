@@ -18,7 +18,7 @@ body {
   background: #0a1628;
 }
 
-/* ── Background ── */
+
 #bg {
   position: fixed; inset: 0; z-index: 0;
   background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80');
@@ -32,8 +32,7 @@ body {
   background: radial-gradient(ellipse at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.35) 100%);
 }
 
-/* ── Atmospheric effects ── */
-/* Corner glows: soft colored auras that breathe slowly */
+
 .corner-glows { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
 .corner-glows::before, .corner-glows::after {
   content: ''; position: absolute; width: 520px; height: 520px;
@@ -65,7 +64,7 @@ body {
   100% { transform: translate(-50%, -55%) skewX(6deg);  opacity: 1; }
 }
 
-/* Shooting stars: occasional diagonal streaks */
+
 .shooting-stars { position: fixed; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
 .shooting-stars::before, .shooting-stars::after {
   content: ''; position: absolute;
@@ -88,14 +87,14 @@ body {
   100% { transform: translateX(110vw)    translateY(40vh) rotate(20deg); opacity: 0; }
 }
 
-/* Subtle film grain — adds texture, hides banding */
+
 .grain {
   position: fixed; inset: 0; z-index: 4; pointer-events: none;
   opacity: 0.06; mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-/* ── Main ── */
+
 .wrap {
   position: relative; z-index: 10;
   display: flex; flex-direction: column;
@@ -104,7 +103,7 @@ body {
   width: 100%; max-width: 480px;
 }
 
-/* ── Avatar ── */
+
 .avatar-ring {
   position: relative;
   width: 96px; height: 96px;
@@ -142,7 +141,7 @@ body {
 .status-indicator.dnd { background: #ed4245; box-shadow: 0 0 8px rgba(237,66,69,0.7); }
 .status-indicator.offline { background: #80848e; box-shadow: none; }
 
-/* ── Name & bio ── */
+
 .username {
   font-size: 1.5rem; font-weight: 700;
   color: #fff;
@@ -167,7 +166,6 @@ body {
   text-shadow: 0 1px 6px rgba(0,0,0,0.4);
 }
 
-/* ── Discord Rich Presence Card ── */
 .rpc-card {
   width: 100%; max-width: 360px;
   background: rgba(255,255,255,0.07);
@@ -216,7 +214,7 @@ body {
   font-size: 1.4rem; flex-shrink: 0;
 }
 
-/* Status text */
+
 .rpc-status-text {
   font-size: 0.68rem; letter-spacing: 0.06em;
   color: rgba(255,255,255,0.35);
@@ -224,7 +222,7 @@ body {
   margin-top: 3px;
 }
 
-/* ── Link Icons Row ── */
+
 .links-row {
   display: flex; align-items: center;
   gap: 6px; flex-wrap: wrap; justify-content: center;
@@ -267,7 +265,7 @@ body {
 }
 .link-icon-btn:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ── Views ── */
+
 .views-row {
   display: flex; align-items: center; gap: 5px;
   color: rgba(255,255,255,0.35); font-size: 0.72rem;
@@ -275,7 +273,7 @@ body {
 }
 .views-row svg { width: 13px; height: 13px; fill: currentColor; opacity: 0.5; }
 
-/* ── Music Player ── */
+
 .music-player {
   width: 100%; max-width: 360px;
   background: rgba(255,255,255,0.07);
@@ -307,7 +305,7 @@ body {
 .progress-track { flex: 1; height: 3px; background: rgba(255,255,255,0.1); border-radius: 99px; cursor: pointer; }
 .progress-fill { height: 100%; border-radius: 99px; background: rgba(255,255,255,0.55); width: 0%; transition: width 0.5s linear; }
 
-/* ── Settings Panel (hidden, password protected) ── */
+
 .settings-trigger {
   position: fixed; bottom: 16px; right: 16px; z-index: 100;
   width: 8px; height: 8px; border-radius: 50%;
@@ -377,13 +375,11 @@ body {
 
 .tab-content { display: none; }
 .tab-content.active { display: block; }
-
-/* link editor rows */
 .link-editor-row { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; }
 .link-editor-row .modal-input { flex: 1; }
 .link-editor-label { font-size: 0.7rem; color: rgba(255,255,255,0.35); min-width: 60px; }
 
-/* color accent */
+
 .accent-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
 .chip {
   width: 24px; height: 24px; border-radius: 6px; cursor: pointer;
@@ -392,7 +388,7 @@ body {
 .chip:hover { transform: scale(1.15); }
 .chip.active { border-color: rgba(255,255,255,0.7); }
 
-/* save toast */
+
 .toast {
   position: fixed; bottom: 48px; left: 50%; transform: translateX(-50%) translateY(10px);
   background: rgba(35,165,90,0.9); color: #fff;
@@ -402,13 +398,11 @@ body {
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ── Interactive Particle Canvas ── */
 #particles {
   position: fixed; inset: 0; z-index: 2;
   pointer-events: none;
 }
 
-/* ── 3D Tilt wrapper ── */
 .tilt {
   position: relative;
   transition: transform 0.15s ease-out;
@@ -422,7 +416,6 @@ body {
   opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 5;
 }
 
-/* ── Local Time widget ── */
 .localtime {
   display: inline-flex; align-items: center; gap: 7px;
   font-size: 0.72rem; font-weight: 500;
@@ -437,7 +430,6 @@ body {
 .localtime svg { width: 12px; height: 12px; fill: currentColor; opacity: 0.7; }
 .localtime .lt-clock { font-variant-numeric: tabular-nums; color: rgba(255,255,255,0.85); letter-spacing: 0.02em; }
 
-/* ── Typing effect cursor ── */
 .type-cursor {
   display: inline-block; width: 2px; height: 0.95em;
   background: rgba(255,255,255,0.6);
@@ -446,7 +438,6 @@ body {
 }
 @keyframes caret-blink { 0%,50%{opacity:1;} 50.01%,100%{opacity:0;} }
 
-/* ── Glitch effect (username) ── */
 .glitch { position: relative; }
 .glitch.glitching::before,
 .glitch.glitching::after {
@@ -469,7 +460,6 @@ body {
   50%{transform:translateX(2px);} 75%{transform:translateX(-1px);} 100%{transform:translateX(0);}
 }
 
-/* ── Music Visualizer ── */
 .visualizer {
   display: flex; align-items: flex-end; justify-content: center;
   gap: 3px; height: 22px; margin-top: 10px;
@@ -487,7 +477,6 @@ body {
   0%,100% { height: 18%; } 50% { height: 90%; }
 }
 
-/* ── Copy notification toast (top center) ── */
 .copy-toast {
   position: fixed; top: 24px; left: 50%;
   transform: translateX(-50%) translateY(-16px);
@@ -504,7 +493,6 @@ body {
 .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .copy-toast svg { width: 15px; height: 15px; fill: #23a55a; }
 
-/* ── Steam RPC Card ── */
 .steam-card {
   width: 100%; max-width: 360px;
   background: rgba(27,40,56,0.45);
@@ -545,7 +533,6 @@ body {
   flex-shrink: 0; display: none; border: 1px solid rgba(255,255,255,0.08);
 }
 
-/* Spotify live progress (inside Discord card) */
 .spotify-progress {
   margin-top: 6px; height: 3px; width: 100%;
   background: rgba(255,255,255,0.12); border-radius: 99px; overflow: hidden; display: none;
@@ -555,10 +542,9 @@ body {
   background: #1db954; transition: width 1s linear;
 }
 
-/* Mute button active state */
 .player-btn.muted { color: rgba(237,66,69,0.85); }
 
-/* Volume slider — slides out from the mute button on hover */
+
 .volume-wrap { position: relative; }
 .volume-popup {
   position: absolute; bottom: calc(100% + 8px); right: -6px;
@@ -588,7 +574,7 @@ body {
   background: #fff; border: none; cursor: pointer;
 }
 
-/* File-input controls in settings */
+
 .file-input-row { display: flex; gap: 6px; align-items: center; margin-top: 6px; }
 .file-btn {
   flex-shrink: 0; font-size: 0.72rem; font-weight: 500;
@@ -611,7 +597,6 @@ body {
 .file-clear:hover { color: rgba(237,66,69,1); }
 .field-or { font-size: 0.6rem; color: rgba(255,255,255,0.25); text-align: center; margin: 4px 0; letter-spacing: 0.1em; }
 
-/* link editor icon upload */
 .link-icon-upload {
   flex-shrink: 0; width: 30px; height: 30px; border-radius: 7px;
   border: 1px dashed rgba(255,255,255,0.18); background: rgba(255,255,255,0.04);
@@ -621,7 +606,6 @@ body {
 .link-icon-upload img { width: 100%; height: 100%; object-fit: contain; }
 .link-icon-upload svg { width: 14px; height: 14px; fill: rgba(255,255,255,0.4); }
 
-/* ── Responsive ── */
 @media (max-width: 420px) {
   .username { font-size: 1.25rem; }
   .rpc-card, .music-player, .steam-card { max-width: 100%; }
@@ -638,40 +622,39 @@ body {
 <div class="grain"></div>
 <canvas id="particles"></canvas>
 
-<!-- MAIN WRAP -->
+
 <div class="wrap" id="mainWrap">
 
-  <!-- Views (top-left feel, actually above links) -->
+
   <div class="views-row" id="viewsRow" style="width:100%;max-width:360px;">
     <svg viewBox="0 0 20 20"><path d="M10 4C5 4 1.3 8.4 1.1 10c.2 1.6 3.9 6 8.9 6s8.7-4.4 8.9-6C18.7 8.4 15 4 10 4zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
     <span id="viewNum">0</span>
   </div>
 
-  <!-- Avatar -->
+
   <div class="avatar-ring">
     <img id="avatarImg" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="avatar">
     <div class="status-indicator" id="statusDot"></div>
   </div>
 
-  <!-- Name -->
+
   <div class="username" id="usernameEl">username</div>
 
-  <!-- Pronouns -->
   <div class="pronouns-badge" id="pronounsBadge" style="display:none;">
     <span id="pronounsEl"></span>
   </div>
 
-  <!-- Bio -->
+
   <div class="bio" id="bioEl">bio goes here</div>
 
-  <!-- Local Time -->
+
   <div class="localtime" id="localTime" style="display:none;">
     <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
     <span>my time</span>
     <span class="lt-clock" id="ltClock">--:--</span>
   </div>
 
-  <!-- Discord Rich Presence Card -->
+
   <div class="rpc-card tilt" id="rpcCard">
     <div class="tilt-glare"></div>
     <div class="rpc-avatar-wrap">
@@ -691,7 +674,6 @@ body {
     <div class="rpc-placeholder" id="rpcPlaceholder" style="display:none;">🎮</div>
   </div>
 
-  <!-- Steam Card -->
   <div class="steam-card tilt" id="steamCard" style="display:none;">
     <div class="tilt-glare"></div>
     <div class="steam-avatar-wrap">
@@ -709,12 +691,10 @@ body {
     <img id="steamGameArt" class="steam-game-art" src="" alt="">
   </div>
 
-  <!-- Link Icons -->
   <div class="links-row" id="linksRow">
-    <!-- populated by JS -->
   </div>
 
-  <!-- Music Player -->
+
   <div class="music-player tilt" id="musicPlayer" style="display:none;">
     <div class="tilt-glare"></div>
     <div class="player-top">
@@ -755,14 +735,14 @@ body {
 
 </div>
 
-<!-- Hidden Settings Trigger (small dot bottom-right) -->
+
 <button class="settings-trigger" id="settingsTrigger" onclick="openSettings()"></button>
 
-<!-- Settings Modal -->
+
 <div class="modal-bg" id="modalBg" onclick="outsideClick(event)">
   <div class="modal">
 
-    <!-- Password Screen -->
+
     <div class="pw-screen" id="pwScreen">
       <div class="modal-title">
         Enter password
@@ -773,7 +753,7 @@ body {
       <div style="font-size:0.68rem;color:rgba(255,255,255,0.2);margin-top:10px;text-align:center;">default: 1234</div>
     </div>
 
-    <!-- Settings Screen -->
+
     <div class="settings-screen" id="settingsScreen">
       <div class="modal-title">
         Settings
@@ -789,7 +769,7 @@ body {
         <button class="tab-btn" onclick="switchTab('extras')">Extras</button>
       </div>
 
-      <!-- TAB: Profile -->
+
       <div class="tab-content active" id="tab-profile">
         <div class="modal-section">
           <div class="modal-label">Username</div>
@@ -835,13 +815,11 @@ body {
         </div>
       </div>
 
-      <!-- TAB: Links -->
       <div class="tab-content" id="tab-links">
         <div style="font-size:0.72rem;color:rgba(255,255,255,0.3);margin-bottom:14px;">Leave URL blank to hide that icon.</div>
         <div id="linksEditor"></div>
       </div>
 
-      <!-- TAB: Media -->
       <div class="tab-content" id="tab-media">
         <div class="modal-section">
           <div class="modal-label">Show Music Player</div>
@@ -891,7 +869,6 @@ body {
         </div>
       </div>
 
-      <!-- TAB: Discord -->
       <div class="tab-content" id="tab-discord">
         <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:14px;">
           Discord ID'ni gir. <b style="color:rgba(255,255,255,0.75);">Lanyard</b> bot'unu sunucuna eklemen gerekiyor.<br>
@@ -912,7 +889,6 @@ body {
         </div>
       </div>
 
-      <!-- TAB: Steam -->
       <div class="tab-content" id="tab-steam">
         <div class="modal-section">
           <div class="modal-label">Show Steam Card</div>
@@ -936,7 +912,6 @@ body {
         </div>
       </div>
 
-      <!-- TAB: Extras -->
       <div class="tab-content" id="tab-extras">
         <div class="modal-section">
           <div class="modal-label">Effects</div>
@@ -1001,10 +976,8 @@ body {
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast">Saved!</div>
 
-<!-- Copy notification -->
 <div class="copy-toast" id="copyToast">
   <svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
   <span id="copyToastText">Copied!</span>
@@ -1013,7 +986,6 @@ body {
 <audio id="audioEl" preload="metadata"></audio>
 
 <script>
-// ─── CONFIG (edit defaults here or via settings panel) ───
 const DEFAULT_CONFIG = {
   "username": "pleow",
   "pronouns": "",
@@ -1022,7 +994,7 @@ const DEFAULT_CONFIG = {
   "bg": "",
   "password": "",
   "discordId": "748994546146345111",
-  "discordUsername": "",
+  "discordUsername": "pleow_",
   "showPlayer": true,
   "songTitle": "I Love",
   "songArtist": "Lucky Star",
@@ -1115,10 +1087,10 @@ const DEFAULT_CONFIG = {
       "icon": "instagram"
     },
     {
-      "id": "custom1",
-      "label": "Custom",
-      "url": "",
-      "icon": "link"
+      "id": "namemc",
+      "label": "Namemc",
+      "url": "https://namemc.com/profile/pleow.1",
+      "icon": "namemc"
     }
   ],
   "steamId": "",
@@ -1126,7 +1098,6 @@ const DEFAULT_CONFIG = {
   "steamProxy": "https://corsproxy.io/?url="
 };
 
-// SVG icons map
 const ICONS = {
   discord: `<svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>`,
   roblox: `<svg viewBox="0 0 24 24"><path d="M4.686 0 0 19.314 19.314 24 24 4.686zm9.468 14.355-4.823-1.29 1.29-4.823 4.823 1.29z"/></svg>`,
@@ -1143,7 +1114,6 @@ const ICONS = {
   link: `<svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>`,
 };
 
-// ─── State ───
 let config = {};
 let lanyardInterval = null;
 let playerInterval = null;
@@ -1151,11 +1121,9 @@ let playerPlaying = false;
 let playerCurrentSec = 0;
 let playerTotalSec = 0;
 let audio = document.getElementById('audioEl');
-audio.volume = 0.25; // gentle default — won't blast eardrums
+audio.volume = 0.25; 
 
-// ─── Asset store (IndexedDB for files: images, gifs, mp3, icons) ───
-// Config holds either a normal URL, or an "asset://<key>" marker pointing to a Blob in IndexedDB.
-let assetURLs = {}; // key -> object URL (recreated each load)
+let assetURLs = {}; 
 const ASSETS = [
   { id: 'avatar',   field: 'avatar',   input: 's-avatar'   },
   { id: 'bg',       field: 'bg',       input: 's-bg'       },
@@ -1204,7 +1172,6 @@ function resolveAsset(val) {
 }
 
 async function resolveAllAssets() {
-  // revoke previous object URLs
   Object.values(assetURLs).forEach(u => { try { URL.revokeObjectURL(u); } catch(e){} });
   assetURLs = {};
   const keys = new Set();
@@ -1221,7 +1188,6 @@ async function resolveAllAssets() {
   }
 }
 
-// Called by file <input> onchange
 async function onAssetFile(id, input) {
   const file = input.files && input.files[0];
   if (!file) return;
@@ -1231,7 +1197,6 @@ async function onAssetFile(id, input) {
     config[meta.field] = 'asset://' + id;
     config.assetNames = config.assetNames || {};
     config.assetNames[id] = file.name;
-    // clear URL text input (file takes precedence)
     const urlEl = document.getElementById(meta.input); if (urlEl) urlEl.value = '';
     if (assetURLs[id]) { try { URL.revokeObjectURL(assetURLs[id]); } catch(e){} }
     assetURLs[id] = URL.createObjectURL(file);
@@ -1261,7 +1226,6 @@ function loadConfig() {
   try {
     const saved = JSON.parse(localStorage.getItem('profileConfig') || '{}');
     config = Object.assign({}, DEFAULT_CONFIG, saved);
-    // merge links
     const savedLinks = saved.links || [];
     config.links = DEFAULT_CONFIG.links.map(def => {
       const found = savedLinks.find(l => l.id === def.id);
@@ -1275,7 +1239,6 @@ function saveConfig() {
   localStorage.setItem('profileConfig', JSON.stringify(config));
 }
 
-// ─── Apply config to DOM ───
 function applyConfig() {
   const nameEl = document.getElementById('usernameEl');
   nameEl.textContent = config.username || 'username';
@@ -1303,7 +1266,7 @@ function applyConfig() {
   else showRpcFallback();
 }
 
-// ─── Bio (typing or static) ───
+
 let typingTimer = null;
 function applyBio() {
   const bioEl = document.getElementById('bioEl');
@@ -1323,22 +1286,18 @@ function applyBio() {
   })();
 }
 
-// ─── Extras: apply feature toggles ───
 function applyExtras() {
-  // Particles
   const canvas = document.getElementById('particles');
   if (config.fxParticles) { canvas.style.display = 'block'; startParticles(); }
   else { canvas.style.display = 'none'; stopParticles(); }
 
-  // Tilt
   if (config.fxTilt) enableTilt(); else disableTilt();
 
-  // Glitch
   const nameEl = document.getElementById('usernameEl');
   nameEl.classList.toggle('glitch', !!config.fxGlitch);
   if (config.fxGlitch) triggerGlitch();
 
-  // Ambient (corner glows + aurora + shooting stars + grain + avatar aura)
+
   const ambient = !!config.fxAmbient;
   document.querySelector('.corner-glows').style.display = ambient ? 'block' : 'none';
   document.querySelector('.aurora').style.display = ambient ? 'block' : 'none';
@@ -1346,11 +1305,10 @@ function applyExtras() {
   document.querySelector('.grain').style.display = ambient ? 'block' : 'none';
   document.querySelector('.avatar-ring').classList.toggle('no-aura', !ambient);
 
-  // Local time
+
   applyLocalTime();
 }
 
-// ─── Links ───
 function renderLinks() {
   const row = document.getElementById('linksRow');
   row.innerHTML = '';
@@ -1379,7 +1337,6 @@ function renderLinks() {
   });
 }
 
-// ─── Clipboard ───
 function copyToClipboard(text, msg) {
   const done = () => { showCopyToast(msg || 'Copied!'); playSound('copy'); };
   if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1401,7 +1358,7 @@ function showCopyToast(msg) {
   t._timer = setTimeout(() => t.classList.remove('show'), 2000);
 }
 
-// ─── Discord Lanyard ───
+
 async function startLanyard(userId) {
   if (lanyardInterval) clearInterval(lanyardInterval);
   await fetchLanyard(userId);
@@ -1420,14 +1377,14 @@ async function fetchLanyard(userId) {
 function applyLanyard(data) {
   const { discord_user, discord_status, activities, listening_to_spotify, spotify } = data;
 
-  // User avatar
+
   const avatarHash = discord_user.avatar;
   const userId = discord_user.id;
   const avatarUrl = avatarHash
     ? `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.${avatarHash.startsWith('a_') ? 'gif' : 'png'}?size=128`
     : `https://cdn.discordapp.com/embed/avatars/${parseInt(discord_user.discriminator||'0') % 5}.png`;
 
-  // Update main avatar too if no custom set
+
   if (!config.avatar || config.avatar === DEFAULT_CONFIG.avatar) {
     document.getElementById('avatarImg').src = avatarUrl;
   }
@@ -1435,14 +1392,13 @@ function applyLanyard(data) {
   document.getElementById('rpcUserAvatar').src = avatarUrl;
   document.getElementById('rpcDisplayName').textContent = discord_user.global_name || discord_user.username;
 
-  // Status dot
+
   const dot = document.getElementById('statusDot');
   dot.className = 'status-indicator';
   if (discord_status === 'idle') dot.classList.add('idle');
   else if (discord_status === 'dnd') dot.classList.add('dnd');
   else if (discord_status === 'offline') dot.classList.add('offline');
 
-  // Spotify
   if (listening_to_spotify && spotify) {
     document.getElementById('rpcDetail').innerHTML =
       `<span style="color:#1db954;font-size:0.66rem;font-weight:600;">♫ SPOTIFY</span><br>` +
@@ -1461,7 +1417,7 @@ function applyLanyard(data) {
   }
   stopSpotifyProgress();
 
-  // Other activities
+
   const activity = (activities || []).find(a => a.type !== 4 && a.type !== 2);
   document.getElementById('rpcAlbumArt').style.display = 'none';
 
@@ -1471,7 +1427,7 @@ function applyLanyard(data) {
     document.getElementById('rpcDetail').innerHTML = detail;
     document.getElementById('rpcStatusText').textContent = '';
 
-    // Activity image
+  
     const largeImg = activity.assets?.large_image;
     const actImgEl = document.getElementById('rpcActivityImg');
     if (largeImg) {
@@ -1490,7 +1446,7 @@ function applyLanyard(data) {
     }
     document.getElementById('rpcPlaceholder').style.display = 'none';
   } else {
-    // Custom status or idle
+  
     const customStatus = (activities || []).find(a => a.type === 4);
     document.getElementById('rpcDetail').innerHTML = customStatus
       ? `${customStatus.emoji?.name || ''} ${escHtml(customStatus.state || '')}`.trim() || 'No activity'
@@ -1510,7 +1466,6 @@ function showRpcFallback() {
   stopSpotifyProgress();
 }
 
-// ─── Spotify live progress ───
 let spotifyTimer = null;
 function startSpotifyProgress(ts) {
   stopSpotifyProgress();
@@ -1532,7 +1487,6 @@ function stopSpotifyProgress() {
   if (bar) bar.style.display = 'none';
 }
 
-// ─── Steam Card (via Cloudflare Worker) ───
 let steamInterval = null;
 function workerBase() { return (config.workerUrl || '').trim().replace(/\/+$/, ''); }
 
@@ -1598,7 +1552,6 @@ function escHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ─── Player ───
 function applyPlayer() {
   const player = document.getElementById('musicPlayer');
   player.style.display = config.showPlayer ? 'block' : 'none';
@@ -1625,7 +1578,7 @@ function applyPlayer() {
   if (audioSrc) {
     audio.src = audioSrc;
     audio.preload = 'metadata';
-    audio.load(); // triggers 'loadedmetadata' → auto duration
+    audio.load(); 
   } else {
     audio.removeAttribute('src');
   }
@@ -1633,7 +1586,6 @@ function applyPlayer() {
   buildVisualizer();
 }
 
-// ─── Visualizer ───
 const VIZ_BARS = 14;
 let vizAnalyser = null, vizData = null, vizRaf = null, vizCtx = null, vizSource = null;
 function buildVisualizer() {
@@ -1654,11 +1606,9 @@ function setVisualizer(playing) {
   const v = document.getElementById('visualizer');
   v.classList.toggle('active', playing);
   if (isUploadedAudio()) {
-    // real frequency analysis (safe: blob is same-origin, never silences audio)
     if (playing) startRealViz(); else stopRealViz();
     v.classList.remove('playing');
   } else {
-    // mock CSS animation (remote URLs / no audio — avoids CORS silencing)
     v.classList.toggle('playing', playing);
   }
 }
@@ -1744,7 +1694,6 @@ function seekPlayer(e) {
   document.getElementById('progressFill').style.width = `${ratio * 100}%`;
 }
 
-// ─── Mute ───
 let playerMuted = false;
 function playerMute() {
   playerMuted = !playerMuted;
@@ -1757,14 +1706,13 @@ function playerMute() {
 }
 function setVolume(v) {
   audio.volume = Math.max(0, Math.min(1, v / 100));
-  if (playerMuted && v > 0) { // unmute when user drags up from 0
+  if (playerMuted && v > 0) {  
     playerMuted = false; audio.muted = false;
     document.getElementById('muteBtn').classList.remove('muted');
     document.getElementById('muteIcon').setAttribute('d', 'M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12z');
   }
 }
 
-// Auto-detect duration from the loaded audio file
 audio.addEventListener('loadedmetadata', () => {
   if (isFinite(audio.duration) && audio.duration > 0) {
     playerTotalSec = audio.duration;
@@ -1775,7 +1723,6 @@ audio.addEventListener('loadedmetadata', () => {
   }
 });
 
-// ─── Settings ───
 let settingsOpen = false;
 let authenticated = false;
 
@@ -1799,7 +1746,6 @@ async function checkPw() {
   let ok = false;
 
   if (base) {
-    // Validate against the Worker (password lives there as a secret, not in this page)
     const btn = document.querySelector('#pwScreen .modal-btn');
     if (btn) { btn.textContent = 'Checking…'; btn.disabled = true; }
     try {
@@ -1811,13 +1757,10 @@ async function checkPw() {
       const data = await res.json();
       ok = !!(data && data.ok);
     } catch (e) {
-      // Worker set but unreachable → deny (do NOT fall back to the temp password,
-      // so the bootstrap password can't be used once you've connected a Worker).
       ok = false;
     }
     if (btn) { btn.textContent = 'Unlock'; btn.disabled = false; }
   } else {
-    // No Worker set yet → temporary local password
     ok = (pw === (config.password || '1234'));
   }
 
@@ -1843,7 +1786,6 @@ function fillSettingsForm() {
   document.getElementById('s-songArtist').value = config.songArtist || '';
   document.getElementById('s-songDuration').value = config.songDuration || '';
 
-  // asset fields: show URL only when it's not a file; show filename + clear when it's a file
   const isAsset = v => typeof v === 'string' && v.startsWith('asset://');
   ASSETS.forEach(a => {
     const v = config[a.field];
@@ -1852,11 +1794,9 @@ function fillSettingsForm() {
     updateFileName(a.id, isAsset(v) ? (config.assetNames && config.assetNames[a.id] || 'uploaded file') : '');
   });
 
-  // steam
   document.getElementById('s-showSteam').checked = !!config.showSteam;
   document.getElementById('s-workerUrl').value = config.workerUrl || '';
 
-  // extras
   document.getElementById('s-fxParticles').checked = !!config.fxParticles;
   document.getElementById('s-fxTilt').checked = !!config.fxTilt;
   document.getElementById('s-fxTyping').checked = !!config.fxTyping;
@@ -1868,7 +1808,6 @@ function fillSettingsForm() {
   document.getElementById('s-globalCounter').checked = !!config.globalCounter;
   document.getElementById('s-counterKey').value = config.counterKey || '';
 
-  // Links editor (with custom icon upload)
   const ed = document.getElementById('linksEditor');
   ed.innerHTML = '';
   (config.links || []).forEach(link => {
@@ -1926,7 +1865,6 @@ function saveSettings() {
   config.songArtist = document.getElementById('s-songArtist').value.trim();
   config.songDuration = parseInt(document.getElementById('s-songDuration').value) || 0;
 
-  // asset fields: pasted URL overrides an uploaded file; otherwise keep file marker
   ASSETS.forEach(a => {
     const urlVal = (document.getElementById(a.input).value || '').trim();
     const cur = config[a.field];
@@ -1934,17 +1872,17 @@ function saveSettings() {
       config[a.field] = urlVal;
       if (config.assetNames) delete config.assetNames[a.id];
     } else if (typeof cur === 'string' && cur.startsWith('asset://')) {
-      // keep existing uploaded file
+
     } else {
       config[a.field] = '';
     }
   });
 
-  // steam
+
   config.showSteam = document.getElementById('s-showSteam').checked;
   config.workerUrl = document.getElementById('s-workerUrl').value.trim();
 
-  // extras
+
   config.fxParticles = document.getElementById('s-fxParticles').checked;
   config.fxTilt = document.getElementById('s-fxTilt').checked;
   config.fxTyping = document.getElementById('s-fxTyping').checked;
@@ -1977,7 +1915,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-// ─── View Counter ───
+
 function animateCount(el, v) {
   let cur = 0;
   const step = Math.max(1, Math.ceil(v / 40));
@@ -1989,24 +1927,26 @@ function animateCount(el, v) {
 }
 async function initViews() {
   const el = document.getElementById('viewNum');
-  // local fallback count
-  let localV = parseInt(localStorage.getItem('profileViews') || '0') + 1;
-  localStorage.setItem('profileViews', localV);
+  const WORKER = 'https://pleow-site.pqkalem.workers.dev';
 
-  if (config.globalCounter && config.counterKey) {
-    try {
-      const ns = 'profile';
-      const key = config.counterKey.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64) || 'page';
-      const res = await fetch(`https://api.counterapi.dev/v1/${ns}/${key}/up`);
-      const json = await res.json();
-      const count = json.count ?? json.value ?? json.data?.count;
-      if (typeof count === 'number') { animateCount(el, count); return; }
-    } catch(e) { /* fall through to local */ }
+
+  const SESSION_MS = 6 * 60 * 60 * 1000;
+  const last = parseInt(localStorage.getItem('lastVisit') || '0');
+  const isNewVisit = (Date.now() - last) > SESSION_MS;
+
+  try {
+    const res = await fetch(WORKER + '/views', {
+      method: isNewVisit ? 'POST' : 'GET',
+    });
+    const data = await res.json();
+    if (isNewVisit) localStorage.setItem('lastVisit', String(Date.now()));
+    animateCount(el, data.count || 0);
+  } catch (e) {
+    let localV = parseInt(localStorage.getItem('profileViews') || '0');
+    animateCount(el, localV);
   }
-  animateCount(el, localV);
 }
 
-// ─── Particle Canvas (mouse-reactive) ───
 let particleState = null;
 function startParticles() {
   if (particleState) return;
@@ -2033,9 +1973,7 @@ function startParticles() {
   function tick() {
     ctx.clearRect(0, 0, w, h);
     for (const p of particles) {
-      // drift
       p.x += p.vx; p.y += p.vy;
-      // mouse repel
       const dx = p.x - mouse.x, dy = p.y - mouse.y;
       const dist = Math.hypot(dx, dy);
       if (dist < 120) {
@@ -2043,7 +1981,6 @@ function startParticles() {
         p.x += (dx / dist) * force * 1.4;
         p.y += (dy / dist) * force * 1.4;
       }
-      // wrap
       if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
       if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
       ctx.beginPath();
@@ -2051,7 +1988,7 @@ function startParticles() {
       ctx.fillStyle = 'rgba(255,255,255,0.45)';
       ctx.fill();
     }
-    // connecting lines
+
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         const a = particles[i], b = particles[j];
@@ -2090,7 +2027,6 @@ function stopParticles() {
   particleState = null;
 }
 
-// ─── 3D Tilt ───
 const tiltHandlers = new Map();
 function enableTilt() {
   document.querySelectorAll('.tilt').forEach(card => {
@@ -2124,7 +2060,6 @@ function disableTilt() {
   tiltHandlers.clear();
 }
 
-// ─── Glitch trigger ───
 function triggerGlitch() {
   const el = document.getElementById('usernameEl');
   if (!config.fxGlitch) return;
@@ -2132,7 +2067,6 @@ function triggerGlitch() {
   setTimeout(() => el.classList.remove('glitching'), 600);
 }
 
-// ─── Local Time ───
 let timeInterval = null;
 function applyLocalTime() {
   const widget = document.getElementById('localTime');
@@ -2154,7 +2088,6 @@ function applyLocalTime() {
   timeInterval = setInterval(update, 1000 * 15);
 }
 
-// ─── UI Sound Engine (synthesized, no files) ───
 let soundCtx = null;
 function playSound(type) {
   if (!config.fxSounds) return;
@@ -2186,7 +2119,6 @@ function bindSounds() {
   });
 }
 
-// ─── Tab title / favicon changer ───
 function bindTitleChanger() {
   const original = () => config.username || 'profile';
   document.addEventListener('visibilitychange', () => {
@@ -2195,13 +2127,11 @@ function bindTitleChanger() {
   });
 }
 
-// ─── Download publish-ready index.html ───
 async function downloadPublishReady() {
-  // 1. Save current panel state first so the freshest values are in `config`
+
   try { saveSettings(); } catch(e) {}
 
-  // 2. Fetch the page's own HTML source. location.href works whether opened
-  //    via http(s):// (deployed) or file:// (local) in most browsers.
+
   let html;
   try {
     const res = await fetch(location.href, { cache: 'no-store' });
@@ -2211,9 +2141,6 @@ async function downloadPublishReady() {
     return;
   }
 
-  // 3. Build the new DEFAULT_CONFIG from the live config — but DO NOT bake
-  //    "asset://" markers, since those point at this device's IndexedDB and
-  //    won't exist for visitors. Replace them with empty so visitors fall back.
   const cleaned = JSON.parse(JSON.stringify(config));
   ASSETS.forEach(a => {
     if (typeof cleaned[a.field] === 'string' && cleaned[a.field].startsWith('asset://')) {
@@ -2225,14 +2152,12 @@ async function downloadPublishReady() {
   });
   delete cleaned.assetNames;
 
-  // Wipe the bootstrap password from the baked file — auth is via Worker only.
+
   cleaned.password = '';
 
   const configBlock = 'const DEFAULT_CONFIG = ' + JSON.stringify(cleaned, null, 2) + ';';
 
-  // 4. Replace the existing DEFAULT_CONFIG block in the source. Match from the
-  //    `const DEFAULT_CONFIG = {` opener to the matching closing `};` by
-  //    counting braces. Safer than a single regex.
+
   const startMarker = 'const DEFAULT_CONFIG = {';
   const startIdx = html.indexOf(startMarker);
   if (startIdx === -1) { showToast('Could not locate DEFAULT_CONFIG in source.'); return; }
@@ -2243,12 +2168,10 @@ async function downloadPublishReady() {
     else if (ch === '}') { depth--; if (depth === 0) { endIdx = i + 1; break; } }
   }
   if (endIdx === -1) { showToast('Could not parse DEFAULT_CONFIG block.'); return; }
-  // include trailing semicolon if present
   if (html[endIdx] === ';') endIdx++;
 
   const baked = html.slice(0, startIdx) + configBlock + html.slice(endIdx);
 
-  // 5. Trigger download as index.html
   const blob = new Blob([baked], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -2256,7 +2179,6 @@ async function downloadPublishReady() {
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 
-  // 6. Warn user if any uploaded assets won't ship with the file
   const lostAssets = [];
   ASSETS.forEach(a => {
     if (typeof config[a.field] === 'string' && config[a.field].startsWith('asset://')) lostAssets.push(a.id);
