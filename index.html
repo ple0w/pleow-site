@@ -252,7 +252,6 @@ body {
 .link-icon-btn svg { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
 .link-icon-btn img { width: 22px; height: 22px; object-fit: contain; border-radius: 5px; }
 
-/* tooltip (shown ABOVE the icon so it never hides behind the player) */
 .link-icon-btn::after {
   content: attr(data-tip);
   position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px);
@@ -989,9 +988,9 @@ body {
 const DEFAULT_CONFIG = {
   "username": "pleow",
   "pronouns": "",
-  "bio": "olması gerek",
+  "bio": "osuyu seviyorum",
   "avatar": "",
-  "bg": "",
+  "bg": "arkaplan.gif",
   "password": "",
   "discordId": "748994546146345111",
   "discordUsername": "pleow_",
@@ -999,7 +998,7 @@ const DEFAULT_CONFIG = {
   "songTitle": "I Love",
   "songArtist": "Lucky Star",
   "albumArt": "https://yt3.googleusercontent.com/5G1HCBum-Jw3mnzZOkwcnm96vUF3Hpq6i_FRptGnuMp9KJFObYqO2QwrlBMeorFYBEhRGUPRkAktu5o=w544-h544-l90-rj",
-  "audioUrl": "",
+  "audioUrl": "music.mp3",
   "songDuration": 99,
   "fxParticles": true,
   "fxTilt": true,
@@ -1060,7 +1059,7 @@ const DEFAULT_CONFIG = {
       "id": "osu",
       "label": "osu!",
       "url": "https://osu.ppy.sh/users/20213041/mania",
-      "icon": "osu"
+      "icon": "osu.png"
     },
     {
       "id": "youtube",
@@ -1090,6 +1089,7 @@ const DEFAULT_CONFIG = {
       "id": "namemc",
       "label": "Namemc",
       "url": "https://namemc.com/profile/pleow.1",
+      "iconData": "namemc.png",
       "icon": "namemc"
     }
   ],
