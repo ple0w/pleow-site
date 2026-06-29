@@ -1,0 +1,21 @@
+name: osu push
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:       
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run osu push
+        env:
+          OSU_CLIENT_ID: ${{ secrets.OSU_CLIENT_ID }}
+          OSU_CLIENT_SECRET: ${{ secrets.OSU_CLIENT_SECRET }}
+          OSU_PUSH_SECRET: ${{ secrets.OSU_PUSH_SECRET }}
+        run: node scripts/osu-push.js
