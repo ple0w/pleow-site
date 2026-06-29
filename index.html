@@ -1232,7 +1232,7 @@ const CONFIG = {
 
   
   bgImage: 'xdd.jpg',     
-  bgDim: 0.45
+  bgDim: 0.45,
   bgVideo: 'bg.mp4',
   bgMusic: 'sound.m4a',
 
@@ -1761,6 +1761,8 @@ function bindCursorHovers(){
     el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
     el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
   });
+}
+
 let CURRENT_LANG = 'tr';
 const I18N = {
   tr: {
@@ -1910,7 +1912,7 @@ function applyConfig(){
     return `<div class="pc-badge">${inner}</div>`;
   }).join('');
   document.getElementById('pcBio').textContent = dc.bio || '';
-  document.getElementById('pcQuote').textContent = CONFIG.quote || '';─
+  document.getElementById('pcQuote').textContent = CONFIG.quote || '';
   document.getElementById('pcMobile').style.display = CONFIG.showMobile ? 'inline-flex' : 'none';
   renderAbout();
   document.getElementById('pcConnections').innerHTML = (dc.connections || []).map(c =>
