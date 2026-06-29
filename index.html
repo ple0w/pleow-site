@@ -110,7 +110,15 @@ section { position: relative; z-index: 2; }
 }
 .pagenav a:hover { color: var(--text); }
 .pagenav a.active { color: #fff; background: var(--accent); }
-.pageviews { font-family: var(--mono); font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; margin-left: 4px; }
+.navcol { display: flex; flex-direction: column; align-items: center; gap: 7px; pointer-events: none; }
+.navcol > * { pointer-events: auto; }
+.pageviews {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 0.62rem; color: var(--muted); letter-spacing: 0.12em;
+  background: rgba(18,18,32,0.6); border: 1px solid var(--line);
+  padding: 4px 11px; border-radius: 999px; backdrop-filter: blur(12px);
+}
+.pageviews svg { width: 13px; height: 13px; opacity: 0.85; }
 @media (max-width: 720px) {
   .pagenav a { padding: 7px 11px; font-size: 0.68rem; }
 }
@@ -883,13 +891,19 @@ img, svg, .eq, .sp-bar, .sp-fill { text-shadow: none; }
     <div class="brand-title" id="brandTitle">PLEOW.SITE</div>
     <div class="brand-status"><span class="dot"></span> SYSTEM ONLINE</div>
   </div>
-  <nav class="pagenav" id="pageNav">
-    <a href="#home" data-page="home" class="active" data-cursor data-i18n="navHome">home</a>
-    <a href="#activity" data-page="activity" data-cursor data-i18n="navActivity">activity</a>
-    <a href="#music" data-page="music" data-cursor data-i18n="navMusic">music</a>
-    <a href="#gear" data-page="gear" data-cursor data-i18n="navGear">gear</a>
-    <a href="#cv" data-page="cv" data-cursor data-i18n="navCv">cv</a>
-  </nav>
+  <div class="navcol">
+    <nav class="pagenav" id="pageNav">
+      <a href="#home" data-page="home" class="active" data-cursor data-i18n="navHome">home</a>
+      <a href="#activity" data-page="activity" data-cursor data-i18n="navActivity">activity</a>
+      <a href="#music" data-page="music" data-cursor data-i18n="navMusic">music</a>
+      <a href="#gear" data-page="gear" data-cursor data-i18n="navGear">gear</a>
+      <a href="#cv" data-page="cv" data-cursor data-i18n="navCv">cv</a>
+    </nav>
+    <div class="pageviews" id="pageViews" title="views">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span id="viewsNum">—</span>
+    </div>
+  </div>
   <div class="lang-badge" data-cursor>EN</div>
 </div>
 <div class="page active" id="page-home">
@@ -1278,7 +1292,7 @@ const CONFIG = {
       name: 'meyav',
       tag: 'my4v',
       url: 'https://osu.ppy.sh/teams/23938',
-      logo: 'https://assets.ppy.sh/teams/flag/23938/7f694985b18eb6e6ebeaa6dada374a38ea81ee67afb44783e08a6ac4e3b31c80.jpeg',  // takım logosu
+      logo: 'https://assets.ppy.sh/teams/flag/23938/7f694985b18eb6e6ebeaa6dada374a38ea81ee67afb44783e08a6ac4e3b31c80.jpeg',
       rank: '446',
       pp: '46,662',
       members: '11',
@@ -1500,7 +1514,7 @@ async function loadMusic(range){
     document.getElementById('sfArtists').textContent = fmtNum(it.cardinality ? it.cardinality.artists : null);
     document.getElementById('sfAlbums').textContent = fmtNum(it.cardinality ? it.cardinality.albums : null);
     document.getElementById('sfSub').textContent = `${fmtNum(it.count)} ${t('mStream')} · ${rangeLabel(range)}`;
-    CLOCK_TOTALS = { count: it.count || 0, mins: mins || 0 };   // clock toplamları (gerçek)
+    CLOCK_TOTALS = { count: it.count || 0, mins: mins || 0 };
   } catch(e){
     document.getElementById('sfSub').textContent = 'veri alınamadı';
   }
@@ -2118,6 +2132,30 @@ function setupMedia(){
   window.addEventListener('click', tryStart);
   window.addEventListener('keydown', tryStart);
 }
+  function valRankIcon(rankStr){
+  if (!rankStr) return '';
+  let s = String(rankStr).toLowerCase().trim().replace(/\s+/g, ' ');
+  s = s.replace(/\basc\b/, 'ascendant').replace(/\bimm\b/, 'immortal')
+       .replace(/\bdia\b/, 'diamond').replace(/\bplat\b/, 'platinum')
+       .replace(/\bbro\b/, 'bronze').replace(/\bsil\b/, 'silver').replace(/\brad\b/, 'radiant');
+  const base = 'https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/';
+  const map = {
+    'unranked':0,'unrated':0,
+    'iron 1':3,'iron 2':4,'iron 3':5,'bronze 1':6,'bronze 2':7,'bronze 3':8,
+    'silver 1':9,'silver 2':10,'silver 3':11,'gold 1':12,'gold 2':13,'gold 3':14,
+    'platinum 1':15,'platinum 2':16,'platinum 3':17,'diamond 1':18,'diamond 2':19,'diamond 3':20,
+    'ascendant 1':21,'ascendant 2':22,'ascendant 3':23,'immortal 1':24,'immortal 2':25,'immortal 3':26,
+    'radiant':27
+  };
+  let tier = map[s];
+  if (tier == null){
+    const m = s.match(/(iron|bronze|silver|gold|platinum|diamond|ascendant|immortal)\s*([123])/);
+    if (m) tier = map[m[1] + ' ' + m[2]];
+    else if (/radiant/.test(s)) tier = 27;
+  }
+  if (tier == null) return '';
+  return base + tier + '/largeicon.png';
+}
 async function loadValorant(){
   const v = CONFIG.valorant;
   const card = document.getElementById('valCard');
@@ -2149,8 +2187,9 @@ async function loadValorant(){
     } catch(e) {}
   }
 
-  const rankVisual = v.rankIcon
-    ? `<img class="val-rank-icon" src="${v.rankIcon}" alt="">`
+  const iconUrl = v.rankIcon || valRankIcon(rank);
+  const rankVisual = iconUrl
+    ? `<img class="val-rank-icon" src="${iconUrl}" onerror="this.style.display='none'" alt="">`
     : `<div class="val-rank-badge">${(rank||'?').charAt(0)}</div>`;
   document.getElementById('valBody').innerHTML = `
     <div class="val-rank-box">
@@ -2332,11 +2371,21 @@ async function loadWeather(){
 }
 
 
+async function loadViews(){
+  const base = CONFIG.workerUrl; if (!base) return;
+  const el = document.getElementById('viewsNum'); if (!el) return;
+  try {
+    const r = await fetch(base + '/views', { cache: 'no-store' });
+    const d = await r.json();
+    const n = (d && (d.views != null ? d.views : d.count != null ? d.count : d.total != null ? d.total : d.value));
+    el.textContent = (n != null) ? Number(n).toLocaleString('en-US') : '—';
+  } catch(e){ el.textContent = '—'; }
+}
 function setupReveal(){
   const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); obs.unobserve(e.target); } });
   }, { threshold: 0.08 });
-  document.querySelectorAll('.sect-reveal').forEach(s => obs.observe(s));
+  document.querySelectorAll(".sect-reveal").forEach(s => obs.observe(s));
 }
 
 
@@ -2357,6 +2406,7 @@ loadLibrary();
 loadOsu();
 loadValorant();
 loadWeather();
+loadViews();
 setupReveal();
 initPageNav();
 initMusicRanges();
