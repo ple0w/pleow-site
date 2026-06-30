@@ -873,6 +873,100 @@ img, svg, .eq, .sp-bar, .sp-fill { text-shadow: none; }
 .wk-skel { height: 100%; width: 40%; background: rgba(255,255,255,0.14); border-radius: 4px; animation: clk-pulse 1.1s ease-in-out infinite; }
 @keyframes clk-pulse { 0%,100% { opacity: 0.35; } 50% { opacity: 0.9; } }
 .clk-loading .clock-cap b, .clk-loading #sfPeak { opacity: 0.4; }
+
+@media (max-width: 768px) {
+  .topbar { padding: 12px 14px; gap: 8px; }
+  .brand-title { font-size: 0.8rem; }
+  .navcol { gap: 5px; }
+  .pageviews { padding: 3px 8px; font-size: 0.56rem; }
+  .lang-badge { width: 38px; height: 38px; font-size: 0.62rem; }
+  .pagenav { padding: 4px; gap: 3px; }
+  .pagenav a { padding: 6px 9px; font-size: 0.64rem; }
+
+  .hero { padding: 100px 14px 50px; min-height: auto; }
+  .section { padding: 60px 18px; }
+  .section-head { margin-bottom: 26px; }
+  .page-head { padding: 86px 16px 12px; }
+  .page-head h1 { font-size: clamp(1.8rem, 8vw, 2.6rem); }
+
+  .home-wrap { gap: 14px; }
+  .profile-card { padding: 0 16px 18px; max-width: 100%; }
+  .pc-banner { height: 120px; margin: 0 -16px 0; }
+  .pc-avatar { width: 84px; height: 84px; }
+  .now-strip.activity-combo { max-width: 100%; }
+
+  .about-grid { grid-template-columns: 1fr; }
+  .about-card { padding: 20px; }
+
+  .hub-row2 { grid-template-columns: 1fr; }
+
+  .osu-body { grid-template-columns: 1fr; gap: 18px; justify-items: center; text-align: center; }
+  .osu-profile { flex-direction: row; justify-content: center; gap: 14px; }
+  .osu-ranks { justify-content: center; gap: 34px; }
+  .osu-stats-mini { align-items: center; }
+
+  .val-body { grid-template-columns: 1fr; gap: 18px; }
+  .val-rank-box { justify-content: center; }
+  .val-stats { grid-template-columns: repeat(4, 1fr); }
+
+  .activity-row img { width: 70px; height: 38px; }
+
+  .gear-grid { grid-template-columns: 1fr; }
+  .stack-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .lib-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); }
+  .friends-grid { grid-template-columns: 1fr; }
+
+  .connect-grid { grid-template-columns: 1fr; }
+  .connect-card { padding: 20px; }
+
+  .sf-userbar { padding: 14px 16px; gap: 12px; }
+  .sf-userbar .sf-ava { width: 50px; height: 50px; }
+  .sf-userbar .sf-name { font-size: 1.3rem; }
+  .sf-ranges { width: 100%; }
+  .sf-ranges button { flex: 1; padding: 7px 6px; }
+  .sf-stats { grid-template-columns: repeat(3, 1fr); }
+  .sf-clock-section .clock-grid { grid-template-columns: 1fr; }
+  .sf-track { flex: 0 0 116px; }
+  .sf-track .cover, .sf-track .cover img { width: 116px; height: 116px; }
+
+  .cv-card { padding: 20px; }
+}
+
+@media (max-width: 600px) {
+  .topbar { flex-wrap: wrap; row-gap: 8px; padding: 10px 12px; }
+  .brand { order: 1; }
+  .lang-badge { order: 2; }
+  .navcol { order: 3; flex-basis: 100%; width: 100%; }
+  .pagenav { width: 100%; justify-content: center; gap: 2px; }
+  .pagenav a { flex: 1; text-align: center; padding: 8px 4px; font-size: 0.66rem; }
+  .pageviews { margin-top: 2px; }
+
+  .hero { padding: 132px 14px 46px; }
+  .page-head { padding: 118px 16px 12px; }
+}
+
+@media (max-width: 480px) {
+  .brand-status { display: none; }
+  .inv-grid { grid-template-columns: repeat(4, 1fr); }
+  .val-stats { grid-template-columns: repeat(2, 1fr); }
+  .sf-stats { grid-template-columns: repeat(2, 1fr); }
+  .osu-ranks { gap: 22px; }
+  .osu-rank .val { font-size: 1.4rem; }
+  .gear-grid { grid-template-columns: 1fr; }
+  .section-title { font-size: clamp(1.6rem, 7vw, 2.4rem); }
+  .big-time { font-size: 2rem; }
+  .pc-name { font-size: 1.5rem; }
+  .pc-bubble { display: none; }
+  .tt-name { font-size: 1rem; }
+  .sf-toptrack { padding: 11px 14px; }
+}
+
+@media (max-width: 360px) {
+  .pagenav a { font-size: 0.6rem; padding: 7px 2px; }
+  .brand-title { font-size: 0.74rem; }
+  .inv-grid { grid-template-columns: repeat(3, 1fr); }
+  .sf-stats { grid-template-columns: repeat(2, 1fr); }
+}
 </style>
 </head>
 <body>
@@ -1226,14 +1320,13 @@ const CONFIG = {
     { label: 'directory', page: 'music' },
   ],
 
-
   discord: {
     handle: 'ple0w',
     banner: 'https://upload.wikimedia.org/wikipedia/commons/8/89/HD_transparent_picture.png',
     bannerText: '',
     bio: '',
-    badges: ['https://cdn.discordapp.com/badge-icons/8a88d63823d8a71cd5e390baa45efa02.png', 
-    'https://cdn.discordapp.com/badge-icons/7d9ae358c8c5e118768335dbe68b4fb8.png', 
+    badges: ['https://cdn.discordapp.com/badge-icons/8a88d63823d8a71cd5e390baa45efa02.png',
+    'https://cdn.discordapp.com/badge-icons/7d9ae358c8c5e118768335dbe68b4fb8.png',
     'https://cdn.discordapp.com/badge-icons/ca105ad9cfc8580c765101d17bbb2323.png',
      'https://cdn.discordapp.com/badge-icons/83d8a1eb09a8d64e59233eec5d4d5c2d.png',
      'https://cdn.discordapp.com/badge-icons/6de6d34650760ba5551a79732e98ed60.png',],
@@ -1244,8 +1337,7 @@ const CONFIG = {
     ],
   },
 
-  
-  bgImage: 'xdd.jpg',     
+  bgImage: 'xdd.jpg',
   bgDim: 0.45,
   bgVideo: 'bg.mp4',
   bgMusic: 'sound.m4a',
@@ -1272,7 +1364,6 @@ const CONFIG = {
     { name: 'Git',        slug: 'git' },
     { name: 'GitHub',     slug: 'github' },
     { name: 'Dart',       slug: 'dart' },
-
   ],
   links: [
     { label: 'Discord',    url: 'https://discord.com/users/748994546146345111', slug: 'discord', sub: '@ple0w' },
@@ -1301,14 +1392,14 @@ const CONFIG = {
   valorant: {
     show: true,
     riotId: 'aptal19#VON',
-    rank: 'Asc 1',               
-    rr: '47',                         
-    peakRank: 'Immortal 3',           
-    kd: '1.34',                        
-    winRate: '54%',                   
-    headshot: '24%',                   
-    agent: 'Jett',                  
-    rankIcon: '',               
+    rank: 'Asc 1',
+    rr: '47',
+    peakRank: 'Immortal 3',
+    kd: '1.34',
+    winRate: '54%',
+    headshot: '24%',
+    agent: 'Jett',
+    rankIcon: '',
     trackerUrl: 'https://tracker.gg/valorant/profile/riot/aptal19%23VON/overview',
   },
   gear: [
@@ -1982,6 +2073,8 @@ async function measurePing(){
 function bindTilt(){
   const card = document.getElementById('profileCard');
   const hero = document.querySelector('.hero');
+  if (!card || !hero) return;
+  if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return;
   hero.addEventListener('mousemove', e => {
     const r = card.getBoundingClientRect();
     const px = (e.clientX - r.left) / r.width - 0.5;
